@@ -1,25 +1,21 @@
 <template>
     <div style="display: flex">
         <div>
-            <div :class="['square', topLeft]"></div>
-            <div :class="['square', bottomLeft]"></div>
+            <div :class="['square', face[0]]"></div>
+            <div :class="['square', face[3]]"></div>
         </div>
         <div>
-            <div :class="['square', topRight]"></div>
-            <div :class="['square', bottomRight]"></div>
+            <div :class="['square', face[1]]"></div>
+            <div :class="['square', face[2]]"></div>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'CubeFace',
+    name: 'CubeFace2x2',
     props: {
-        topLeft: String,
-        topRight: String,
-        bottomLeft: String,
-        bottomRight: String,
-        corners: Array
+        face: Array
     }
 }
 </script>
@@ -45,11 +41,11 @@ export default {
 }
 
 .orange {
-    background: hsla(23, 100%, 50%, 0.8);
+    background: hsla(45, 100%, 50%, 0.8);
 }
 
 .yellow {
-    background: hsla(59, 100%, 50%, 0.8);
+    background: hsla(72, 100%, 53%, 0.8);
 }
 
 .white {

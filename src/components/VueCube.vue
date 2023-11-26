@@ -2,22 +2,22 @@
 <div class="scene">
   <div class="cube">
     <div class="cube__face cube__face--front">
-        <CubeFace :topRight="cube.front[0]" :topLeft="cube.front[1]" :bottomLeft="cube.front[2]" :bottomRight="cube.front[3]"/>
+        <CubeFace2x2 :face="cube.front"/>
     </div>
     <div class="cube__face cube__face--back">
-        <CubeFace :topRight="cube.back[0]" :topLeft="cube.back[1]" :bottomLeft="cube.back[2]" :bottomRight="cube.back[3]"/>
+        <CubeFace2x2 :face="cube.back"/>
     </div>
     <div class="cube__face cube__face--right">
-        <CubeFace :topRight="cube.right[0]" :topLeft="cube.right[1]" :bottomLeft="cube.right[2]" :bottomRight="cube.right[3]"/>
+        <CubeFace2x2 :face="cube.right"/>
     </div>
     <div class="cube__face cube__face--left">
-        <CubeFace :topRight="cube.left[0]" :topLeft="cube.left[1]" :bottomLeft="cube.left[2]" :bottomRight="cube.left[3]"/>
+        <CubeFace2x2 :face="cube.left"/>
     </div>
     <div class="cube__face cube__face--top">
-        <CubeFace :topRight="yellow" :topLeft="yellow" :bottomLeft="yellow" :bottomRight="yellow"/>
+        <CubeFace2x2 :face="cube.top"/>
     </div>
     <div class="cube__face cube__face--bottom">
-        <CubeFace :topRight="white" :topLeft="white" :bottomLeft="white" :bottomRight="white"/>
+        <CubeFace2x2 :face="cube.bottom"/>
     </div>
   </div>
 </div>
@@ -41,11 +41,12 @@
     <input type="radio" name="rotate-cube-side" value="bottom" /> bottom
   </label>
 </p>
-
+<button @click="u">U</button>
+<button @click="r">R</button>
 </template>
   
 <script>
-import CubeFace from './CubeFace.vue';
+import CubeFace2x2 from './CubeFace2x2.vue';
 
 export default {
 name: 'VueCube',
@@ -70,7 +71,7 @@ mounted() {
         console.log(`the component is now mounted.`)
 },
 components: {
-    CubeFace
+    CubeFace2x2
 },
 data() {
     return {
@@ -90,6 +91,53 @@ data() {
         black: 'black',
         white: 'white'
     }
+},
+methods: {
+    getCubeCopy() {
+        return JSON.parse(JSON.stringify(this.cube));
+    },
+    clockwise(face) {
+        let faceCopy = JSON.parse(JSON.stringify(face));
+        faceCopy[0] = face[2];
+        faceCopy[1] = face[0];
+        faceCopy[2] = face[1];
+        faceCopy[3] = face[2];
+        return faceCopy;
+    },
+    u() {
+        let cubeCopy = this.getCubeCopy();
+
+        cubeCopy.front[0] = this.cube.right[0];
+        cubeCopy.front[1] = this.cube.right[1];
+        cubeCopy.back[0] = this.cube.left[0];
+        cubeCopy.back[1] = this.cube.left[1];
+        cubeCopy.left[0] = this.cube.front[0];
+        cubeCopy.left[1] = this.cube.front[1];
+        cubeCopy.right[0] = this.cube.back[0];
+        cubeCopy.right[1] = this.cube.back[1];
+
+        cubeCopy.top = this.clockwise(cubeCopy.top);
+
+        this.cube = cubeCopy;
+    },
+    r() {
+        let cubeCopy = this.getCubeCopy();
+
+        cubeCopy.front[1] = this.cube.bottom[1];
+        cubeCopy.front[2] = this.cube.bottom[2];
+        cubeCopy.back[0] = this.cube.top[2];
+        cubeCopy.back[3] = this.cube.top[1];
+        cubeCopy.top[1] = this.cube.front[1];
+        cubeCopy.top[2] = this.cube.front[2];
+        cubeCopy.bottom[1] = this.cube.back[3];
+        cubeCopy.bottom[2] = this.cube.back[0];
+
+        cubeCopy.right = this.clockwise(cubeCopy.right);
+
+        this.cube = cubeCopy;
+
+    }
+
 }
 }
 </script>
