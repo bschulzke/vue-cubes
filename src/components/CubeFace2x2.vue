@@ -29,27 +29,27 @@ export default {
 }
 
 .red {
-    background: hsla(0, 100%, 50%, 0.8);
+    background: hsla(0, 100%, 50%, 0.9);
 }
 
 .blue {
-    background: hsla(230, 100%, 50%, 0.8);
+    background: hsla(230, 100%, 50%, 0.9);
 }
 
 .green {
-    background: hsla(118, 100%, 50%, 0.8);
+    background: hsla(118, 100%, 50%, 0.9);
 }
 
 .orange {
-    background: hsla(45, 100%, 50%, 0.8);
+    background: hsla(45, 100%, 50%, 0.9);
 }
 
 .yellow {
-    background: hsla(72, 100%, 53%, 0.8);
+    background: hsla(72, 100%, 53%, 0.9);
 }
 
 .white {
-    background: hsla(60, 11%, 98%, 0.8);
+    background: hsla(60, 11%, 98%, 0.9);
 }
 
 </style>

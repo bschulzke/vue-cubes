@@ -41,8 +41,14 @@
     <input type="radio" name="rotate-cube-side" value="bottom" /> bottom
   </label>
 </p>
-<button @click="u">U</button>
-<button @click="r">R</button>
+<div>
+    <button @click="u">U</button>
+    <button @click="r">R</button>
+</div>
+<div>
+    <button @click="uPrime">U'</button>
+    <button @click="rPrime">R'</button>
+</div>
 </template>
   
 <script>
@@ -98,10 +104,18 @@ methods: {
     },
     clockwise(face) {
         let faceCopy = JSON.parse(JSON.stringify(face));
-        faceCopy[0] = face[2];
+        faceCopy[0] = face[3];
         faceCopy[1] = face[0];
         faceCopy[2] = face[1];
         faceCopy[3] = face[2];
+        return faceCopy;
+    },
+    counterclockwise(face) {
+        let faceCopy = JSON.parse(JSON.stringify(face));
+        faceCopy[0] = face[1];
+        faceCopy[1] = face[2];
+        faceCopy[2] = face[3];
+        faceCopy[3] = face[0];
         return faceCopy;
     },
     u() {
@@ -135,14 +149,48 @@ methods: {
         cubeCopy.right = this.clockwise(cubeCopy.right);
 
         this.cube = cubeCopy;
+    },
+    uPrime() {
+        let cubeCopy = this.getCubeCopy();
 
+        cubeCopy.front[0] = this.cube.left[0];
+        cubeCopy.front[1] = this.cube.left[1];
+        cubeCopy.back[0] = this.cube.right[0];
+        cubeCopy.back[1] = this.cube.right[1];
+        cubeCopy.left[0] = this.cube.back[0];
+        cubeCopy.left[1] = this.cube.back[1];
+        cubeCopy.right[0] = this.cube.front[0];
+        cubeCopy.right[1] = this.cube.front[1];
+
+        cubeCopy.top = this.counterclockwise(cubeCopy.top);
+
+        this.cube = cubeCopy;
+    },
+    rPrime() {
+      let cubeCopy = this.getCubeCopy();
+
+      cubeCopy.front[1] = this.cube.top[1];
+      cubeCopy.front[2] = this.cube.top[2];
+      cubeCopy.back[0] = this.cube.bottom[2];
+      cubeCopy.back[3] = this.cube.bottom[1];
+      cubeCopy.top[1] = this.cube.back[3];
+      cubeCopy.top[2] = this.cube.back[0];
+      cubeCopy.bottom[1] = this.cube.front[1];
+      cubeCopy.bottom[2] = this.cube.front[2];
+
+      cubeCopy.right = this.counterclockwise(cubeCopy.right);
+      
+      this.cube = cubeCopy;
     }
-
 }
 }
 </script>
 
 <style scoped>
+
+button {
+    min-width: 3rem;
+}
 
 * { box-sizing: border-box; }
 
