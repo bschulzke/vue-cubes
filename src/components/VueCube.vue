@@ -1,5 +1,6 @@
 <template>
-<div class="scene">
+  <div>
+  <div class="scene">
   <div class="cube">
     <div class="cube__face cube__face--front">
         <CubeFace2x2 :face="cube.front"/>
@@ -23,32 +24,35 @@
 </div>
 <p class="radio-group">
   <label>
-    <input type="radio" name="rotate-cube-side" value="front" checked /> front
+    <input type="radio" name="rotate-cube-side" value="front" checked /> Front
   </label>
   <label>
-    <input type="radio" name="rotate-cube-side" value="right" /> right
+    <input type="radio" name="rotate-cube-side" value="right" /> Right
   </label>
   <label>
-    <input type="radio" name="rotate-cube-side" value="back" /> back
+    <input type="radio" name="rotate-cube-side" value="back" /> Back
   </label>
   <label>
-    <input type="radio" name="rotate-cube-side" value="left" /> left
+    <input type="radio" name="rotate-cube-side" value="left" /> Left
   </label>
   <label>
-    <input type="radio" name="rotate-cube-side" value="top" /> top
+    <input type="radio" name="rotate-cube-side" value="top" /> Top
   </label>
   <label>
-    <input type="radio" name="rotate-cube-side" value="bottom" /> bottom
+    <input type="radio" name="rotate-cube-side" value="bottom" /> Bottom
   </label>
 </p>
 <div>
     <button @click="u">U</button>
     <button @click="r">R</button>
+    <button @click="f">F</button>
 </div>
 <div>
     <button @click="uPrime">U'</button>
     <button @click="rPrime">R'</button>
+    <button @click="fPrime">F'</button>
 </div>
+  </div>
 </template>
   
 <script>
@@ -134,22 +138,6 @@ methods: {
 
         this.cube = cubeCopy;
     },
-    r() {
-        let cubeCopy = this.getCubeCopy();
-
-        cubeCopy.front[1] = this.cube.bottom[1];
-        cubeCopy.front[2] = this.cube.bottom[2];
-        cubeCopy.back[0] = this.cube.top[2];
-        cubeCopy.back[3] = this.cube.top[1];
-        cubeCopy.top[1] = this.cube.front[1];
-        cubeCopy.top[2] = this.cube.front[2];
-        cubeCopy.bottom[1] = this.cube.back[3];
-        cubeCopy.bottom[2] = this.cube.back[0];
-
-        cubeCopy.right = this.clockwise(cubeCopy.right);
-
-        this.cube = cubeCopy;
-    },
     uPrime() {
         let cubeCopy = this.getCubeCopy();
 
@@ -166,6 +154,25 @@ methods: {
 
         this.cube = cubeCopy;
     },
+    r() {
+        let cubeCopy = this.getCubeCopy();
+
+        cubeCopy.front[1] = this.cube.bottom[1];
+        cubeCopy.front[2] = this.cube.bottom[2];
+
+        cubeCopy.back[0] = this.cube.top[2];
+        cubeCopy.back[3] = this.cube.top[1];
+
+        cubeCopy.top[1] = this.cube.front[1];
+        cubeCopy.top[2] = this.cube.front[2];
+        
+        cubeCopy.bottom[1] = this.cube.back[3];
+        cubeCopy.bottom[2] = this.cube.back[0];
+
+        cubeCopy.right = this.clockwise(cubeCopy.right);
+
+        this.cube = cubeCopy;
+    },
     rPrime() {
       let cubeCopy = this.getCubeCopy();
 
@@ -173,15 +180,47 @@ methods: {
       cubeCopy.front[2] = this.cube.top[2];
       cubeCopy.back[0] = this.cube.bottom[2];
       cubeCopy.back[3] = this.cube.bottom[1];
-      cubeCopy.top[1] = this.cube.back[3];
-      cubeCopy.top[2] = this.cube.back[0];
       cubeCopy.bottom[1] = this.cube.front[1];
       cubeCopy.bottom[2] = this.cube.front[2];
+      cubeCopy.top[1] = this.cube.back[3];
+      cubeCopy.top[2] = this.cube.back[0];
 
       cubeCopy.right = this.counterclockwise(cubeCopy.right);
       
       this.cube = cubeCopy;
-    }
+    },
+    f() {
+      let cubeCopy = this.getCubeCopy();
+
+      cubeCopy.bottom[0] = this.cube.right[3];
+      cubeCopy.bottom[1] = this.cube.right[0];
+      cubeCopy.top[2] = this.cube.left[1];
+      cubeCopy.top[3] = this.cube.left[2];
+      cubeCopy.left[1] = this.cube.bottom[0];
+      cubeCopy.left[2] = this.cube.bottom[1];
+      cubeCopy.right[0] = this.cube.top[3];
+      cubeCopy.right[3] = this.cube.top[2];
+
+      cubeCopy.front = this.clockwise(this.cube.front);
+
+      this.cube = cubeCopy;
+  },
+  fPrime() {
+    let cubeCopy = this.getCubeCopy();
+
+    cubeCopy.bottom[0] = this.cube.left[1];
+    cubeCopy.bottom[1] = this.cube.left[2];
+    cubeCopy.top[2] = this.cube.right[3];
+    cubeCopy.top[3] = this.cube.right[0];
+    cubeCopy.left[1] = this.cube.top[2];
+    cubeCopy.left[2] = this.cube.top[3];
+    cubeCopy.right[0] = this.cube.bottom[1];
+    cubeCopy.right[3] = this.cube.bottom[0];
+
+    cubeCopy.front = this.counterclockwise(this.cube.front);
+
+    this.cube = cubeCopy;
+  }
 }
 }
 </script>
@@ -192,25 +231,32 @@ button {
     min-width: 3rem;
 }
 
+label {
+  font-size: 0.75rem;
+}
+
 * { box-sizing: border-box; }
 
 body { font-family: sans-serif; }
 
 .scene {
-  width: 200px;
-  height: 200px;
-  border: 1px solid #CCC;
+  width: 15rem;
+  height: 15rem;
   margin: 80px;
-  perspective: 400px;
+  perspective: 30rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .cube {
-  width: 200px;
-  height: 200px;
+  width: 15rem;
+  height: 15rem;
   position: relative;
   transform-style: preserve-3d;
   transform: translateZ(-100px);
   transition: transform 1s;
+  padding-left: 1.5rem;
 }
 
 .cube.show-front  { transform: translateZ(-100px) rotateY(   0deg); }

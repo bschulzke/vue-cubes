@@ -1,5 +1,7 @@
 <template>
-  <VueCube/>
+  <div class="app">
+    <VueCube/>
+  </div>
 </template>
 
 <script>
@@ -21,5 +23,11 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.app {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 </style>
