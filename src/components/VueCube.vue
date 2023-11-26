@@ -2,16 +2,16 @@
 <div class="scene">
   <div class="cube">
     <div class="cube__face cube__face--front">
-        <CubeFace :topRight="red" :topLeft="red" :bottomLeft="red" :bottomRight="red"/>
+        <CubeFace :topRight="cube.front[0]" :topLeft="cube.front[1]" :bottomLeft="cube.front[2]" :bottomRight="cube.front[3]"/>
     </div>
     <div class="cube__face cube__face--back">
-        <CubeFace :topRight="orange" :topLeft="orange" :bottomLeft="orange" :bottomRight="orange"/>
+        <CubeFace :topRight="cube.back[0]" :topLeft="cube.back[1]" :bottomLeft="cube.back[2]" :bottomRight="cube.back[3]"/>
     </div>
     <div class="cube__face cube__face--right">
-        <CubeFace :topRight="green" :topLeft="green" :bottomLeft="green" :bottomRight="green"/>
+        <CubeFace :topRight="cube.right[0]" :topLeft="cube.right[1]" :bottomLeft="cube.right[2]" :bottomRight="cube.right[3]"/>
     </div>
     <div class="cube__face cube__face--left">
-        <CubeFace :topRight="blue" :topLeft="blue" :bottomLeft="blue" :bottomRight="blue"/>
+        <CubeFace :topRight="cube.left[0]" :topLeft="cube.left[1]" :bottomLeft="cube.left[2]" :bottomRight="cube.left[3]"/>
     </div>
     <div class="cube__face cube__face--top">
         <CubeFace :topRight="yellow" :topLeft="yellow" :bottomLeft="yellow" :bottomRight="yellow"/>
@@ -74,6 +74,14 @@ components: {
 },
 data() {
     return {
+        cube: {
+            front: ['red', 'red', 'red', 'red'],
+            back: ['orange', 'orange', 'orange', 'orange'],
+            right: ['green', 'green', 'green', 'green'],
+            left: ['blue', 'blue', 'blue', 'blue'],
+            top: ['yellow', 'yellow', 'yellow', 'yellow'],
+            bottom: ['white', 'white', 'white', 'white']
+        },
         red: 'red',
         blue: 'blue',
         green: 'green',

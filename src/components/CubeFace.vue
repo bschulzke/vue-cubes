@@ -18,7 +18,8 @@ export default {
         topLeft: String,
         topRight: String,
         bottomLeft: String,
-        bottomRight: String
+        bottomRight: String,
+        corners: Array
     }
 }
 </script>
