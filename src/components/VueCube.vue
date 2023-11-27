@@ -1,5 +1,8 @@
 <template>
   <div>
+  <div class="loader-wrapper">
+    <div v-if="loading" class="throbber-loader"></div>
+  </div>
   <div class="scene">
   <div class="cube">
     <div class="cube__face cube__face--front">
@@ -58,7 +61,10 @@
     <button @click="bPrime">B'</button>
     <button @click="dPrime">D'</button>
 </div>
-  </div>
+<button class="wide-button" @click="scramble">Scramble</button>
+<button class="wide-button" @click="reset">Reset</button>
+<button class="wide-button" @click="solve">Solve</button>
+</div>
 </template>
   
 <script>
@@ -105,10 +111,31 @@ data() {
         orange: 'orange',
         yellow: 'yellow',
         black: 'black',
-        white: 'white'
+        white: 'white',
+        loading: false
     }
 },
 methods: {
+    reset() {
+      this.cube = {
+            front: ['red', 'red', 'red', 'red'],
+            back: ['orange', 'orange', 'orange', 'orange'],
+            right: ['green', 'green', 'green', 'green'],
+            left: ['blue', 'blue', 'blue', 'blue'],
+            top: ['yellow', 'yellow', 'yellow', 'yellow'],
+            bottom: ['white', 'white', 'white', 'white']
+        };
+    },
+    solve() {
+      let worker = new Worker("solver.js");
+      console.log("Starting up the worker...")
+      worker.postMessage(this.getCubeCopy());
+      this.loading = true;
+      worker.onmessage = (e) => {
+        console.log("Response from solver worker: " + e.data);
+        this.loading = false;
+      }
+    },
     getCubeCopy() {
         return JSON.parse(JSON.stringify(this.cube));
     },
@@ -322,15 +349,56 @@ methods: {
     cubeCopy.bottom = this.counterclockwise(this.cube.bottom);
 
     this.cube = cubeCopy;
+  },
+  makeMove(symbol) {
+    switch (symbol) {
+      case 'u':
+        this.u();
+      case 'U':
+        this.uPrime();
+      case 'd':
+        this.d();
+      case 'D':
+        this.dPrime();
+      case 'l':
+        this.l();
+      case 'L':
+        this.lPrime();
+      case 'r':
+        this.r();
+      case 'R':
+        this.rPrime();
+      case 'f':
+        this.f();
+      case 'F':
+        this.fPrime();
+      case 'b':
+        this.b();
+      case 'B':
+        this.bPrime();
+      default:
+        console.log("Invalid move symbol");
+    }
+  },
+  scramble() {
+    let symbols = ['u','U','d','D','l','L','r','R','f','F','b','B'];
+    for (let i = 0; i < 12; i++) {
+      this.makeMove(symbols[Math.floor(Math.random() * symbols.length)])
+    }
   }
 }
 }
 </script>
 
 <style scoped>
+@import '/src/assets/css/throbber-loader.css';
 
 button {
     min-width: 3rem;
+}
+
+.wide-button {
+  width: 6rem;
 }
 
 label {
@@ -388,6 +456,10 @@ body { font-family: sans-serif; }
 .cube__face--bottom { transform: rotateX(-90deg) translateZ(100px); }
 
 label { margin-right: 10px; }
+
+.loader-wrapper {
+  height: 2rem;
+}
 
 </style>
   
