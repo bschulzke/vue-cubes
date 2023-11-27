@@ -46,11 +46,15 @@
     <button @click="u">U</button>
     <button @click="r">R</button>
     <button @click="f">F</button>
+    <button @click="l">L</button>
+    <button @click="b">B</button>
 </div>
 <div>
     <button @click="uPrime">U'</button>
     <button @click="rPrime">R'</button>
     <button @click="fPrime">F'</button>
+    <button @click="lPrime">L'</button>
+    <button @click="bPrime">B'</button>
 </div>
   </div>
 </template>
@@ -218,6 +222,70 @@ methods: {
     cubeCopy.right[3] = this.cube.bottom[0];
 
     cubeCopy.front = this.counterclockwise(this.cube.front);
+
+    this.cube = cubeCopy;
+  },
+  l() {
+    let cubeCopy = this.getCubeCopy();
+
+    cubeCopy.front[0] = this.cube.top[0];
+    cubeCopy.front[3] = this.cube.top[3];
+    cubeCopy.back[1] = this.cube.bottom[0];
+    cubeCopy.back[2] = this.cube.bottom[3];
+    cubeCopy.bottom[0] = this.cube.front[0];
+    cubeCopy.bottom[3] = this.cube.front[3];
+    cubeCopy.top[0] = this.cube.back[2];
+    cubeCopy.top[3] = this.cube.back[1];
+    
+    cubeCopy.left = this.clockwise(this.cube.left);
+
+    this.cube = cubeCopy;
+  },
+  lPrime() {
+    let cubeCopy = this.getCubeCopy();
+
+    cubeCopy.front[0] = this.cube.bottom[0];
+    cubeCopy.front[3] = this.cube.bottom[3];
+    cubeCopy.back[1] = this.cube.top[3];
+    cubeCopy.back[2] = this.cube.top[0];
+    cubeCopy.bottom[0] = this.cube.back[2];
+    cubeCopy.bottom[3] = this.cube.back[1];
+    cubeCopy.top[0] = this.cube.front[0];
+    cubeCopy.top[3] = this.cube.front[3];
+
+    cubeCopy.left = this.counterclockwise(this.cube.left);
+
+    this.cube = cubeCopy;
+  },
+  b() {
+    let cubeCopy = this.getCubeCopy();
+
+    cubeCopy.bottom[2] = this.cube.left[3];
+    cubeCopy.bottom[3] = this.cube.left[0];
+    cubeCopy.top[0] = this.cube.right[1];
+    cubeCopy.top[1] = this.cube.right[2];
+    cubeCopy.left[0] = this.cube.top[1];
+    cubeCopy.left[3] = this.cube.top[0];
+    cubeCopy.right[1] = this.cube.bottom[2];
+    cubeCopy.right[2] = this.cube.bottom[3];
+
+    cubeCopy.back = this.clockwise(this.cube.back);
+
+    this.cube = cubeCopy;
+  },
+  bPrime() {
+    let cubeCopy = this.getCubeCopy();
+
+    cubeCopy.bottom[2] = this.cube.right[1];
+    cubeCopy.bottom[3] = this.cube.right[2];
+    cubeCopy.top[0] = this.cube.left[3];
+    cubeCopy.top[1] = this.cube.left[0];
+    cubeCopy.left[0] = this.cube.bottom[3];
+    cubeCopy.left[3] = this.cube.bottom[2];
+    cubeCopy.right[1] = this.cube.top[0];
+    cubeCopy.right[2] = this.cube.top[1];
+
+    cubeCopy.back = this.counterclockwise(this.cube.back);
 
     this.cube = cubeCopy;
   }
