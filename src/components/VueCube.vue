@@ -48,6 +48,7 @@
     <button @click="f">F</button>
     <button @click="l">L</button>
     <button @click="b">B</button>
+    <button @click="d">D</button>
 </div>
 <div>
     <button @click="uPrime">U'</button>
@@ -55,6 +56,7 @@
     <button @click="fPrime">F'</button>
     <button @click="lPrime">L'</button>
     <button @click="bPrime">B'</button>
+    <button @click="dPrime">D'</button>
 </div>
   </div>
 </template>
@@ -286,6 +288,38 @@ methods: {
     cubeCopy.right[2] = this.cube.top[1];
 
     cubeCopy.back = this.counterclockwise(this.cube.back);
+
+    this.cube = cubeCopy;
+  },
+  d() {
+    let cubeCopy = this.getCubeCopy();
+
+    cubeCopy.front[2] = this.cube.left[2];
+    cubeCopy.front[3] = this.cube.left[3];
+    cubeCopy.back[2] = this.cube.right[2];
+    cubeCopy.back[3] = this.cube.right[3];
+    cubeCopy.left[2] = this.cube.back[2];
+    cubeCopy.left[3] = this.cube.back[3];
+    cubeCopy.right[2] = this.cube.front[2];
+    cubeCopy.right[3] = this.cube.front[3];
+
+    cubeCopy.bottom = this.clockwise(this.cube.bottom);
+
+    this.cube = cubeCopy;
+  },
+  dPrime() {
+    let cubeCopy = this.getCubeCopy();
+
+    cubeCopy.front[2] = this.cube.right[2];
+    cubeCopy.front[3] = this.cube.right[3];
+    cubeCopy.back[2] = this.cube.left[2];
+    cubeCopy.back[3] = this.cube.left[3];
+    cubeCopy.left[2] = this.cube.front[2];
+    cubeCopy.left[3] = this.cube.front[3];
+    cubeCopy.right[2] = this.cube.back[2];
+    cubeCopy.right[3] = this.cube.back[3];
+
+    cubeCopy.bottom = this.counterclockwise(this.cube.bottom);
 
     this.cube = cubeCopy;
   }
