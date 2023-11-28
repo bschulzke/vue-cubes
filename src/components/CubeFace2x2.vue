@@ -26,6 +26,7 @@ export default {
     height: 96px;
     width: 96px;
     border: 2px solid black;
+    border-radius: 5px;
 }
 
 .red {

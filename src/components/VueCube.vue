@@ -441,6 +441,7 @@ body { font-family: sans-serif; }
   width: 200px;
   height: 200px;
   border: 2px solid black;
+  border-radius: 5px;
   line-height: 200px;
   font-size: 40px;
   font-weight: bold;
