@@ -48,18 +48,28 @@ export default {
             start: null
         }
     },
-    setup() {
+    setup(props, context) {
     const el = ref(null)
     const { isSwiping, direction } = useSwipe(el, {
         onSwipeEnd(e, direction) {
-            console.log("Swipe " + direction + " from zero");
+            context.emit('start-swipe', 0);
+            if (direction === 'right') {
+                context.emit('end-swipe', 1);
+            } else if (direction === 'down') {
+                context.emit('end-swipe', 3);
+            }
         }
     })
 
     const el3 = ref(null)
     const { isSwiping3, direction3 } = useSwipe(el3, {
         onSwipeEnd(e, direction) {
-            console.log("Swipe " + direction + " from three");
+            context.emit('start-swipe', 3);
+            if (direction === 'right') {
+                context.emit('end-swipe', 2);
+            } else if (direction === 'up') {
+                context.emit('end-swipe', 0);
+            }
         }
     })
 
