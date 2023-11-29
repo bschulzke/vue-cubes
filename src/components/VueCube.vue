@@ -1,10 +1,7 @@
 <template>
-  <div>
-  <div class="loader-wrapper">
-    <div v-if="loading" class="throbber-loader"></div>
-  </div>
-  <div class="scene">
-  <div class="cube">
+  <div class="cube-simulator" @touchend="endDragRotate" @mouseup="endDragRotate()">
+  <div @touchstart="initDragRotate($event)" @touchmove="dragRotate($event)" @mousemove="dragRotate($event)" @mousedown="initDragRotate($event)" class="scene">
+  <div ref="cube" class="cube">
     <div class="cube__face cube__face--front">
         <CubeFace2x2 :face="cube.front"/>
     </div>
@@ -25,26 +22,12 @@
     </div>
   </div>
 </div>
-<p class="radio-group">
-  <label>
-    <input type="radio" name="rotate-cube-side" value="front" checked /> Front
-  </label>
-  <label>
-    <input type="radio" name="rotate-cube-side" value="right" /> Right
-  </label>
-  <label>
-    <input type="radio" name="rotate-cube-side" value="back" /> Back
-  </label>
-  <label>
-    <input type="radio" name="rotate-cube-side" value="left" /> Left
-  </label>
-  <label>
-    <input type="radio" name="rotate-cube-side" value="top" /> Top
-  </label>
-  <label>
-    <input type="radio" name="rotate-cube-side" value="bottom" /> Bottom
-  </label>
-</p>
+<button @click="showFront()">Front</button>
+<button @click="showBack()">Back</button>
+<button @click="showLeft()">Left</button>
+<button @click="showRight()">Right</button>
+<button @click="showTop()">Top</button>
+<button @click="showBottom()">Bottom</button>
 <div>
     <button @click="u">U</button>
     <button @click="r">R</button>
@@ -73,24 +56,7 @@ import CubeFace2x2 from './CubeFace2x2.vue';
 export default {
 name: 'VueCube',
 mounted() {
-    var cube = document.querySelector('.cube');
-    var radioGroup = document.querySelector('.radio-group');
-    var currentClass = '';
-
-    function changeSide() {
-    var checkedRadio = radioGroup.querySelector(':checked');
-    var showClass = 'show-' + checkedRadio.value;
-    if ( currentClass ) {
-        cube.classList.remove( currentClass );
-    }
-    cube.classList.add( showClass );
-    currentClass = showClass;
-    }
-    // set initial side
-    changeSide();
-
-    radioGroup.addEventListener( 'change', changeSide );
-        console.log(`the component is now mounted.`)
+    this.showFront();
 },
 components: {
     CubeFace2x2
@@ -112,10 +78,57 @@ data() {
         yellow: 'yellow',
         black: 'black',
         white: 'white',
-        loading: false
+        loading: false,
+        dragging: false,
+        delta: {}
     }
 },
 methods: {
+  initDragRotate(e) {
+    this.dragging = true;
+    this.delta = {
+      x: e.pageX,
+      y: e.pageY,
+    };
+  },
+  dragRotate(e) {
+    if (!this.dragging) {
+      return;
+    }
+    // THIS IS THE CALCULATION THAT HAS CHANGED
+    this.delta.x = e.pageX / window.innerWidth * 360; //- delta.x;
+    this.delta.y = e.pageY / window.innerHeight * 360; // - delta.y;
+
+    this.rotateCube(this.delta.x, this.delta.y, 0);
+  },
+  rotateCube(deltaX, deltaY, deltaZ) { 
+    let rotateParam = '';
+    rotateParam += ' rotate' + 'Y' + '(' + deltaX + 'deg)';
+    rotateParam += ' rotate' + 'X' + '(' + deltaY + 'deg)';
+    rotateParam += ' rotate' + 'Z' + '(' + deltaZ + 'deg)';
+    this.$refs.cube.style.transform = rotateParam;
+  },
+  showFront() {
+    this.rotateCube(-20, -20, 0)
+  },
+  showRight() {
+    this.rotateCube(-70, 0, 20)
+  },
+  showLeft() {
+    this.rotateCube(70, 0, -20);
+  },
+  showBack() {
+    this.rotateCube(-160, 20, 0);
+  },
+  showTop() {
+    this.rotateCube(0, -70, 20);
+  },
+  showBottom() {
+  this.rotateCube(0, 70, -10);
+  },
+  endDragRotate() {
+    this.dragging = false;
+  },
     reset() {
       this.cube = {
             front: ['red', 'red', 'red', 'red'],
@@ -376,8 +389,6 @@ methods: {
         this.b();
       case 'B':
         this.bPrime();
-      default:
-        console.log("Invalid move symbol");
     }
   },
   scramble() {
@@ -394,11 +405,16 @@ methods: {
 @import '/src/assets/css/throbber-loader.css';
 
 button {
-    min-width: 3rem;
+    min-width: 3.5rem;
+}
+
+.cube-simulator {
+  width: 100vw;
+  height: 100vh;
 }
 
 .wide-button {
-  width: 6rem;
+  width: 7rem;
 }
 
 label {
@@ -410,13 +426,13 @@ label {
 body { font-family: sans-serif; }
 
 .scene {
-  width: 15rem;
-  height: 15rem;
-  margin: 80px;
+  width: 100vw;
+  height: 60vh;
   perspective: 30rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: grey;
 }
 
 .cube {
@@ -428,25 +444,18 @@ body { font-family: sans-serif; }
   transition: transform 1s;
   padding-left: 1.5rem;
 }
-
-.cube.show-front  { transform: translateZ(-100px) rotateY(   0deg); }
-.cube.show-right  { transform: translateZ(-100px) rotateY( -90deg); }
-.cube.show-back   { transform: translateZ(-100px) rotateY(-180deg); }
-.cube.show-left   { transform: translateZ(-100px) rotateY(  90deg); }
-.cube.show-top    { transform: translateZ(-100px) rotateX( -90deg); }
-.cube.show-bottom { transform: translateZ(-100px) rotateX(  90deg); }
-
 .cube__face {
   position: absolute;
   width: 200px;
   height: 200px;
   border: 2px solid black;
-  border-radius: 5px;
+  border-radius: 10px;
   line-height: 200px;
   font-size: 40px;
   font-weight: bold;
   color: white;
   text-align: center;
+  background-color: black;
 }
 
 .cube__face--front  { transform: rotateY(  0deg) translateZ(100px); }

@@ -26,31 +26,31 @@ export default {
     height: 96px;
     width: 96px;
     border: 2px solid black;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 .red {
-    background: hsla(0, 100%, 50%, 0.9);
+    background: hsla(0, 100%, 50%, 1);
 }
 
 .blue {
-    background: hsla(230, 100%, 50%, 0.9);
+    background: hsla(230, 100%, 50%, 1);
 }
 
 .green {
-    background: hsla(118, 100%, 50%, 0.9);
+    background: hsla(118, 100%, 50%, 1);
 }
 
 .orange {
-    background: hsla(45, 100%, 50%, 0.9);
+    background: rgba(255, 165, 0, 1);
 }
 
 .yellow {
-    background: hsla(72, 100%, 53%, 0.9);
+    background: rgb(240, 252, 0);
 }
 
 .white {
-    background: hsla(60, 11%, 98%, 0.9);
+    background: hsla(60, 11%, 98%, 1);
 }
 
 </style>
