@@ -1,12 +1,40 @@
 <template>
-    <div style="display: flex">
-        <div>
-            <div :class="['square', face[0]]"></div>
-            <div :class="['square', face[3]]"></div>
+    <div style="display: flex; user-select: none;">
+        <div style='user-select: none;'>
+            <div 
+            @mousedown="$emit('start-swipe', 0)" 
+            @mouseup="$emit('end-swipe', 0)"
+            @touchstart="$emit('start-swipe', 0)"
+            @touchcancel="$emit('end-swipe', 0)"
+            @touchend="$emit('end-swipe', 0)" 
+            :class="['square', face[0]]"
+            />
+            <div
+            @mousedown="$emit('start-swipe', 3)"
+            @mouseup="$emit('end-swipe', 3)"
+            @touchstart="$emit('start-swipe', 3)"
+            @touchcancel="$emit('end-swipe', 0)"
+            @touchend="$emit('end-swipe', 3)"  
+            :class="['square', face[3]]"
+            />
         </div>
         <div>
-            <div :class="['square', face[1]]"></div>
-            <div :class="['square', face[2]]"></div>
+            <div 
+            @mousedown="$emit('start-swipe', 1)"
+            @mouseup="$emit('end-swipe', 1)"
+            @touchstart="$emit('start-swipe', 1)"
+            @touchcancel="$emit('end-swipe', 0)"
+            @touchend="$emit('end-swipe', 1)"  
+            :class="['square', face[1]]"
+            />
+            <div 
+            @mousedown="$emit('start-swipe', 2)"
+            @mouseup="$emit('end-swipe', 2)"
+            @touchstart="$emit('start-swipe', 2)"
+            @touchcancel="$emit('end-swipe', 0)"
+            @touchend="$emit('end-swipe', 2)" 
+            :class="['square', face[2]]"
+            />
         </div>
     </div>
 </template>

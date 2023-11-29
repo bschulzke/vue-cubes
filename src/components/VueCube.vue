@@ -1,35 +1,62 @@
 <template>
-  <div class="cube-simulator" @touchend="endDragRotate" @mouseup="endDragRotate()">
-  <div @touchstart="initDragRotate($event)" @touchmove="dragRotate($event)" @mousemove="dragRotate($event)" @mousedown="initDragRotate($event)" class="scene">
-  <div ref="cube" class="cube">
+  <div class="cube-simulator">
+  <div style="user-select: none;" class="scene">
+  <div style="user-select: none;" ref="cube" class="cube">
     <div class="cube__face cube__face--front">
-        <CubeFace2x2 :face="cube.front"/>
+        <CubeFace2x2 
+        @start-swipe="(corner) => startSwipe('front', corner)" 
+        @end-swipe="(corner) => endSwipe('front', corner)" 
+        :face="cube.front"
+        />
     </div>
     <div class="cube__face cube__face--back">
-        <CubeFace2x2 :face="cube.back"/>
+        <CubeFace2x2 
+        @start-swipe="(corner) => startSwipe('back', corner)"
+        @end-swipe="(corner) => endSwipe('back', corner)" 
+        :face="cube.back"
+        />
     </div>
     <div class="cube__face cube__face--right">
-        <CubeFace2x2 :face="cube.right"/>
+        <CubeFace2x2
+        @start-swipe="(corner) => startSwipe('right', corner)" 
+        @end-swipe="(corner) => endSwipe('right', corner)"  
+        :face="cube.right"/>
     </div>
     <div class="cube__face cube__face--left">
-        <CubeFace2x2 :face="cube.left"/>
+        <CubeFace2x2
+        @start-swipe="(corner) => startSwipe('left', corner)" 
+        @end-swipe="(corner) => endSwipe('left', corner)"  
+        :face="cube.left"
+        />
     </div>
     <div class="cube__face cube__face--top">
-        <CubeFace2x2 :face="cube.top"/>
+        <CubeFace2x2 
+        @start-swipe="(corner) => startSwipe('top', corner)" 
+        @end-swipe="(corner) => endSwipe('top', corner)" 
+        :face="cube.top"
+        />
     </div>
     <div class="cube__face cube__face--bottom">
-        <CubeFace2x2 :face="cube.bottom"/>
+        <CubeFace2x2 
+        @start-swipe="(corner) => startSwipe('bottom', corner)" 
+        @end-swipe="(corner) => endSwipe('bottom', corner)" 
+        :face="cube.bottom"
+        />
     </div>
   </div>
 </div>
+<div>Start face: {{ start.face }}</div>
+<div>Start corner: {{ start.corner }}</div>
+<div>End face: {{ end.face }}</div>
+<div>End corner: {{ end.corner }}</div>
 <div class="slider-wrapper">
-  <label>x:</label><input class="slider" v-model="x" type="range" min="-20" max="360">   
+  <label>x:</label><input class="slider" v-model="x" type="range" min="-360" max="360">   
 </div>
 <div class="slider-wrapper">
-  <label>y:</label><input class="slider" v-model="y" type="range" min="-20" max="360">
+  <label>y:</label><input class="slider" v-model="y" type="range" min="-360" max="360">
 </div>
 <div class="slider-wrapper">
-  <label>z:</label><input class="slider" v-model="z" type="range" min="0" max="360">
+  <label>z:</label><input class="slider" v-model="z" type="range" min="-360" max="360">
 </div>
 <div>
     <button @click="u">U</button>
@@ -74,6 +101,14 @@ data() {
             top: ['yellow', 'yellow', 'yellow', 'yellow'],
             bottom: ['white', 'white', 'white', 'white']
         },
+        start: {
+          face: null,
+          corner: null
+        },
+        end: {
+          face: null,
+          corner: null
+        },
         red: 'red',
         blue: 'blue',
         green: 'green',
@@ -82,8 +117,6 @@ data() {
         black: 'black',
         white: 'white',
         loading: false,
-        dragging: false,
-        delta: {},
         x: 0,
         y: 0,
         z: 0
@@ -96,49 +129,70 @@ watch: {
     }
   },
   y(newY, oldY) {
-    if (newY !== oldY) {
+    if (newY !== oldY)
       this.rotateCube(this.x, newY, this.z);
-    }
   },
   z(newZ, oldZ) {
     if (newZ !== oldZ) {
       this.rotateCube(this.x, this.y, newZ);
     }
-  }
+  },
 },
 methods: {
-  initDragRotate(e) {
-    this.dragging = true;
-    this.delta = {
-      x: e.pageX,
-      y: e.pageY,
-    };
-  },
-  dragRotate(e) {
-    if (!this.dragging) {
-      return;
-    }
-    // THIS IS THE CALCULATION THAT HAS CHANGED
-    this.delta.x = e.pageX / window.innerWidth * 360; //- delta.x;
-    this.delta.y = e.pageY / window.innerHeight * 360; // - delta.y;
-
-    this.rotateCube(this.delta.x, this.delta.y, 0);
-  },
-  rotateCube(deltaX, deltaY, deltaZ) { 
-    this.x = deltaX;
-    this.y = deltaY;
-    this.z = deltaZ;
+  rotateCube(newX, newY, newZ) { 
+    this.x = newX;
+    this.y = newY;
+    this.z = newZ;
     let rotateParam = '';
-    rotateParam += ' rotate' + 'Y' + '(' + deltaX + 'deg)';
-    rotateParam += ' rotate' + 'X' + '(' + deltaY + 'deg)';
-    rotateParam += ' rotate' + 'Z' + '(' + deltaZ + 'deg)';
+    rotateParam += ' rotate' + 'Y' + '(' + newX + 'deg)';
+    rotateParam += ' rotate' + 'X' + '(' + newY + 'deg)';
+    rotateParam += ' rotate' + 'Z' + '(' + newZ + 'deg)';
     this.$refs.cube.style.transform = rotateParam;
+  },
+  startSwipe(face, corner) {
+    console.log("Start swipe: " + face + ", " + corner);
+    this.start.face = face;
+    this.start.corner = corner;
+  },
+  endSwipe(face, corner) {
+    console.log("End swipe: " + face + ", " + corner);
+    this.end.face = face;
+    this.end.corner = corner;
+
+    if ( this.start.face !== 'top' && this.start.face !== 'bottom') {
+      this.handleUandD();
+    } 
+    if (this.start.face === 'front') {
+      this.handleFront();
+    }
+
+    this.start.face = 'front';
+    this.start.corner = 0;
+  },
+  handleUandD() {
+    if (this.start.corner == 0 && this.end.corner == 1) {
+            this.uPrime();
+      } else if (this.start.corner === 1 && this.end.corner === 0) {
+        this.u();
+      } else if (this.start.corner === 3 && this.end.corner === 2) {
+        this.d();
+      } else if (this.start.corner === 2 && this.end.corner === 3) {
+        this.dPrime();
+      }
+  },
+  handleFront() {
+    if (this.start.corner === 1 && this.end.corner === 2) {
+        this.rPrime();
+      } else if (this.start.corner === 2 && this.end.corner === 1) {
+        this.r();
+      } else if (this.start.corner === 0 && this.end.corner === 3) {
+        this.l();
+      } else if (this.start.corner === 3 && this.end.corner === 0) {
+        this.lPrime();
+      }
   },
   showFront() {
     this.rotateCube(-20, -20, 0)
-  },
-  endDragRotate() {
-    this.dragging = false;
   },
     reset() {
       this.cube = {
@@ -464,6 +518,9 @@ body { font-family: sans-serif; }
   transition: transform 1s;
   padding-left: 1.5rem;
 }
+.cube:hover {
+  cursor: pointer;
+}
 .cube__face {
   position: absolute;
   width: 200px;
@@ -475,6 +532,7 @@ body { font-family: sans-serif; }
   color: white;
   text-align: center;
   background-color: black;
+  user-select: none;
 }
 
 .cube__face--front  { transform: rotateY(  0deg) translateZ(100px); }
