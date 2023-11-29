@@ -1,38 +1,32 @@
 <template>
-    <div style="display: flex; user-select: none;">
-        <div style='user-select: none;'>
+    <div style="display: flex;">
+        <div>
             <div 
+            ref="el"
             @mousedown="$emit('start-swipe', 0)" 
             @mouseup="$emit('end-swipe', 0)"
-            @touchstart="$emit('start-swipe', 0)"
-            @touchcancel="$emit('end-swipe', 0)"
-            @touchend="$emit('end-swipe', 0)" 
+            @touchstart="start = 0"
             :class="['square', face[0]]"
             />
             <div
+            ref="el3"
             @mousedown="$emit('start-swipe', 3)"
             @mouseup="$emit('end-swipe', 3)"
-            @touchstart="$emit('start-swipe', 3)"
-            @touchcancel="$emit('end-swipe', 0)"
-            @touchend="$emit('end-swipe', 3)"  
+            @touchstart="start = 3"
             :class="['square', face[3]]"
             />
         </div>
         <div>
             <div 
             @mousedown="$emit('start-swipe', 1)"
-            @mouseup="$emit('end-swipe', 1)"
-            @touchstart="$emit('start-swipe', 1)"
-            @touchcancel="$emit('end-swipe', 0)"
-            @touchend="$emit('end-swipe', 1)"  
+            @mouseup="$emit('end-swipe', 1)" 
+            @touchstart="start = 1"
             :class="['square', face[1]]"
             />
             <div 
             @mousedown="$emit('start-swipe', 2)"
             @mouseup="$emit('end-swipe', 2)"
-            @touchstart="$emit('start-swipe', 2)"
-            @touchcancel="$emit('end-swipe', 0)"
-            @touchend="$emit('end-swipe', 2)" 
+            @touchstart="start = 2"
             :class="['square', face[2]]"
             />
         </div>
@@ -40,11 +34,37 @@
 </template>
 
 <script>
+
+import { useSwipe } from '@vueuse/core';
+import { ref } from 'vue';
+
 export default {
     name: 'CubeFace2x2',
     props: {
         face: Array
-    }
+    },
+    data() {
+        return {
+            start: null
+        }
+    },
+    setup() {
+    const el = ref(null)
+    const { isSwiping, direction } = useSwipe(el, {
+        onSwipeEnd(e, direction) {
+            console.log("Swipe " + direction + " from zero");
+        }
+    })
+
+    const el3 = ref(null)
+    const { isSwiping3, direction3 } = useSwipe(el3, {
+        onSwipeEnd(e, direction) {
+            console.log("Swipe " + direction + " from three");
+        }
+    })
+
+    return { el, isSwiping, direction, el3, isSwiping3, direction3 }
+  }
 }
 </script>
 

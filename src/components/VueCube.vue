@@ -161,9 +161,19 @@ methods: {
 
     if ( this.start.face !== 'top' && this.start.face !== 'bottom') {
       this.handleUandD();
-    } 
+    }
+    
     if (this.start.face === 'front') {
       this.handleFront();
+    }
+    if (this.start.face === 'back') {
+      this.handleBack();
+    }
+    if (this.start.face === 'left') {
+      this.handleLeft();
+    }
+    if (this.start.face === 'right') {
+      this.handleRight();
     }
 
     this.start.face = 'front';
@@ -190,6 +200,39 @@ methods: {
       } else if (this.start.corner === 3 && this.end.corner === 0) {
         this.lPrime();
       }
+  },
+  handleBack() {
+    if (this.start.corner === 1 && this.end.corner === 2) {
+      this.lPrime();
+    } else if (this.start.corner === 2 && this.end.corner === 1) {
+      this.l();
+    } else if (this.start.corner === 0 && this.end.corner === 3) {
+      this.r();
+    } else if (this.start.corner === 3 && this.end.corner === 0) {
+      this.rPrime();
+    }
+  },
+  handleLeft() {
+    if (this.start.corner === 1 && this.end.corner === 2) {
+      this.fPrime();
+    } else if (this.start.corner === 2 && this.end.corner === 1) {
+      this.f();
+    } else if (this.start.corner === 0 && this.end.corner === 3) {
+      this.b();
+    } else if (this.start.corner === 3 && this.end.corner === 0) {
+      this.bPrime();
+    }
+  },
+  handleRight() {
+    if (this.start.corner === 1 && this.end.corner === 2) {
+      this.bPrime();
+    } else if (this.start.corner === 2 && this.end.corner === 1) {
+      this.b();
+    } else if (this.start.corner === 0 && this.end.corner === 3) {
+      this.f();
+    } else if (this.start.corner === 3 && this.end.corner === 0) {
+      this.fPrime();
+    }
   },
   showFront() {
     this.rotateCube(-20, -20, 0)
