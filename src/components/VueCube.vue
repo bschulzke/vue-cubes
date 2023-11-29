@@ -45,10 +45,6 @@
     </div>
   </div>
 </div>
-<div>Start face: {{ start.face }}</div>
-<div>Start corner: {{ start.corner }}</div>
-<div>End face: {{ end.face }}</div>
-<div>End corner: {{ end.corner }}</div>
 <div class="slider-wrapper">
   <label>x:</label><input class="slider" v-model="x" type="range" min="-360" max="360">   
 </div>
@@ -175,6 +171,12 @@ methods: {
     if (this.start.face === 'right') {
       this.handleRight();
     }
+    if (this.start.face === 'top') {
+      this.handleTop();
+    }
+    if (this.start.face === 'bottom') {
+      this.handleBottom();
+    }
 
     this.start.face = 'front';
     this.start.corner = 0;
@@ -232,6 +234,44 @@ methods: {
       this.f();
     } else if (this.start.corner === 3 && this.end.corner === 0) {
       this.fPrime();
+    }
+  },
+  handleTop() {
+    if (this.start.corner === 1 && this.end.corner === 2) {
+      this.rPrime();
+    } else if (this.start.corner === 2 && this.end.corner === 1) {
+      this.r();
+    } else if (this.start.corner === 0 && this.end.corner === 3) {
+      this.l();
+    } else if (this.start.corner === 3 && this.end.corner === 0) {
+      this.lPrime();
+    } else if (this.start.corner === 0 && this.end.corner === 1) {
+      this.bPrime();
+    } else if (this.start.corner === 1 && this.end.corner === 0) {
+      this.b();
+    } else if (this.start.corner === 3 && this.end.corner === 2) {
+      this.f();
+    } else if (this.start.corner === 2 && this.end.corner === 3) {
+      this.fPrime();
+    }
+  },
+  handleBottom() {
+    if (this.start.corner === 1 && this.end.corner === 2) {
+      this.rPrime();
+    } else if (this.start.corner === 2 && this.end.corner === 1) {
+      this.r();
+    } else if (this.start.corner === 0 && this.end.corner === 3) {
+      this.l();
+    } else if (this.start.corner === 3 && this.end.corner === 0) {
+      this.lPrime();
+    } else if (this.start.corner === 0 && this.end.corner === 1) {
+      this.fPrime();
+    } else if (this.start.corner === 1 && this.end.corner === 0) {
+      this.f();
+    } else if (this.start.corner === 3 && this.end.corner === 2) {
+      this.b();
+    } else if (this.start.corner === 2 && this.end.corner === 3) {
+      this.bPrime();
     }
   },
   showFront() {
