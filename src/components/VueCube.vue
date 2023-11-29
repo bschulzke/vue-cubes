@@ -22,9 +22,15 @@
     </div>
   </div>
 </div>
-<labe>x:</labe><input v-model="x" type="range" min="-360" max="360">   
-<label>y:</label><input v-model="y" type="range" min="-360" max="360">
-<label>z:</label><input v-model="z" type="range" min="-360" max="360">
+<div class="slider-wrapper">
+  <label>x:</label><input class="slider" v-model="x" type="range" min="-20" max="360">   
+</div>
+<div class="slider-wrapper">
+  <label>y:</label><input class="slider" v-model="y" type="range" min="-20" max="360">
+</div>
+<div class="slider-wrapper">
+  <label>z:</label><input class="slider" v-model="z" type="range" min="0" max="360">
+</div>
 <div>
     <button @click="u">U</button>
     <button @click="r">R</button>
@@ -78,8 +84,8 @@ data() {
         loading: false,
         dragging: false,
         delta: {},
-        x: -20,
-        y: -20,
+        x: 0,
+        y: 0,
         z: 0
     }
 },
@@ -426,6 +432,16 @@ label {
   font-size: 0.75rem;
 }
 
+.slider-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slider {
+  width: 20rem;
+}
+
 * { box-sizing: border-box; }
 
 body { font-family: sans-serif; }
@@ -437,7 +453,6 @@ body { font-family: sans-serif; }
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: grey;
 }
 
 .cube {
