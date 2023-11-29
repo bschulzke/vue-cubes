@@ -22,12 +22,9 @@
     </div>
   </div>
 </div>
-<button @click="showFront()">Front</button>
-<button @click="showBack()">Back</button>
-<button @click="showLeft()">Left</button>
-<button @click="showRight()">Right</button>
-<button @click="showTop()">Top</button>
-<button @click="showBottom()">Bottom</button>
+<labe>x:</labe><input v-model="x" type="range" min="-360" max="360">   
+<label>y:</label><input v-model="y" type="range" min="-360" max="360">
+<label>z:</label><input v-model="z" type="range" min="-360" max="360">
 <div>
     <button @click="u">U</button>
     <button @click="r">R</button>
@@ -80,8 +77,28 @@ data() {
         white: 'white',
         loading: false,
         dragging: false,
-        delta: {}
+        delta: {},
+        x: -20,
+        y: -20,
+        z: 0
     }
+},
+watch: {
+  x(newX, oldX) {
+    if (newX !== oldX) {
+      this.rotateCube(newX, this.y, this.z);
+    }
+  },
+  y(newY, oldY) {
+    if (newY !== oldY) {
+      this.rotateCube(this.x, newY, this.z);
+    }
+  },
+  z(newZ, oldZ) {
+    if (newZ !== oldZ) {
+      this.rotateCube(this.x, this.y, newZ);
+    }
+  }
 },
 methods: {
   initDragRotate(e) {
@@ -102,6 +119,9 @@ methods: {
     this.rotateCube(this.delta.x, this.delta.y, 0);
   },
   rotateCube(deltaX, deltaY, deltaZ) { 
+    this.x = deltaX;
+    this.y = deltaY;
+    this.z = deltaZ;
     let rotateParam = '';
     rotateParam += ' rotate' + 'Y' + '(' + deltaX + 'deg)';
     rotateParam += ' rotate' + 'X' + '(' + deltaY + 'deg)';
@@ -110,21 +130,6 @@ methods: {
   },
   showFront() {
     this.rotateCube(-20, -20, 0)
-  },
-  showRight() {
-    this.rotateCube(-70, 0, 20)
-  },
-  showLeft() {
-    this.rotateCube(70, 0, -20);
-  },
-  showBack() {
-    this.rotateCube(-160, 20, 0);
-  },
-  showTop() {
-    this.rotateCube(0, -70, 20);
-  },
-  showBottom() {
-  this.rotateCube(0, 70, -10);
   },
   endDragRotate() {
     this.dragging = false;
