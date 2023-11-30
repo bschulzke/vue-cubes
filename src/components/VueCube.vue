@@ -591,7 +591,7 @@ label {
 
 .slider-wrapper-vertical {
   position: absolute;
-  right: 0;
+  right: 1rem;
   top: 2rem;
 }
 
