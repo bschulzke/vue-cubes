@@ -6,7 +6,6 @@
         <CubeFace2x2 
         @start-swipe="(corner) => startSwipe('front', corner)" 
         @end-swipe="(corner) => endSwipe('front', corner)"
-        @mobile-swipe="(origin, direction) => mobileSwipe(origin, direction, 'front')"
         :face="cube.front"
         />
     </div>
@@ -14,7 +13,6 @@
         <CubeFace2x2 
         @start-swipe="(corner) => startSwipe('back', corner)"
         @end-swipe="(corner) => endSwipe('back', corner)" 
-        @mobile-swipe="(origin, direction) => mobileSwipe(origin, direction, 'back')"
         :face="cube.back"
         />
     </div>
@@ -22,14 +20,12 @@
         <CubeFace2x2
         @start-swipe="(corner) => startSwipe('right', corner)" 
         @end-swipe="(corner) => endSwipe('right', corner)"  
-        @mobile-swipe="(origin, direction) => mobileSwipe(origin, direction, 'right')"
         :face="cube.right"/>
     </div>
     <div class="cube__face cube__face--left">
         <CubeFace2x2
         @start-swipe="(corner) => startSwipe('left', corner)" 
         @end-swipe="(corner) => endSwipe('left', corner)"  
-        @mobile-swipe="(origin, direction) => mobileSwipe(origin, direction, 'left')"
         :face="cube.left"
         />
     </div>
@@ -37,7 +33,6 @@
         <CubeFace2x2 
         @start-swipe="(corner) => startSwipe('top', corner)" 
         @end-swipe="(corner) => endSwipe('top', corner)" 
-        @mobile-swipe="(origin, direction) => mobileSwipe(origin, direction, 'top')"
         :face="cube.top"
         />
     </div>
@@ -45,7 +40,6 @@
         <CubeFace2x2 
         @start-swipe="(corner) => startSwipe('bottom', corner)" 
         @end-swipe="(corner) => endSwipe('bottom', corner)" 
-        @mobile-swipe="(origin, direction) => mobileSwipe(origin, direction, 'bottom')"
         :face="cube.bottom"
         />
     </div>
@@ -73,6 +67,7 @@ export default {
 name: 'VueCube',
 mounted() {
     this.showFront();
+    this.history.push(this.getCubeCopy(this.cube));
 },
 components: {
     CubeFace2x2
@@ -87,6 +82,7 @@ data() {
             top: ['yellow', 'yellow', 'yellow', 'yellow'],
             bottom: ['white', 'white', 'white', 'white']
         },
+        history: [],
         start: {
           face: null,
           corner: null
@@ -170,30 +166,6 @@ methods: {
 
     this.start.face = 'front';
     this.start.corner = 0;
-  },
-  mobileSwipe(origin, direction, face) {
-    console.log(direction + " from " + origin);
-    console.log("z: " + this.z);
-
-    if (this.z > -45 && this.z < 45) {
-      this.startSwipe(face, origin);
-      if (origin === 0 && direction === 'right') {
-        this.endSwipe(face, 1);
-      } else if (origin === 0 && direction === 'down') {
-        this.endSwipe(face, 3);
-      } else if (origin === 3 && direction === 'up')  {
-        this.endSwipe(face, 0);
-      } else if (origin === 1 && direction === 'left') {
-        this.endSwipe(face, 0);
-      } else if (origin == 1 && direction === 'down') {
-        this.endSwipe(face, 2);
-      } else if (origin === 2 && direction === 'up') {
-        this.endSwipe(face, 1);
-      } else if (origin === 3 && direction === 'right') {
-        th
-      }
-    }
-
   },
   handleUandD() {
     if (this.start.corner == 0 && this.end.corner == 1) {
@@ -663,6 +635,9 @@ label { margin-right: 10px; }
 and (min-width : 1224px) {
   .slider {
     width: 50vw;
+  }
+  .vertical {
+    width: 1rem;
   }
 }
 
