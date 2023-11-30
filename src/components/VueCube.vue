@@ -54,8 +54,8 @@
 <div class="slider-wrapper">
   <label>x:</label><input class="slider" v-model="x" type="range" min="-360" max="360">   
 </div>
-<div class="slider-wrapper">
-  <label>y:</label><input class="slider" v-model="y" type="range" min="-360" max="360">
+<div class="slider-wrapper-vertical">
+  <label>y:</label><input class="slider vertical" v-model="y" orient="vertical" type="range" min="-360" max="360">
 </div>
 <div class="slider-wrapper">
   <label>z:</label><input class="slider" v-model="z" type="range" min="-360" max="360">
@@ -589,9 +589,22 @@ label {
   align-items: center;
 }
 
+.slider-wrapper-vertical {
+  position: absolute;
+  right: 0;
+  top: 2rem;
+}
+
 .slider {
   width: 90vw;
   height: 3rem;
+}
+
+.vertical {
+  appearance: slider-vertical;
+  width: 1rem;
+  height: 50vh;
+  display: flex;
 }
 
 * { box-sizing: border-box; }
