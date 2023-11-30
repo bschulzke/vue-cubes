@@ -5,7 +5,8 @@
     <div class="cube__face cube__face--front">
         <CubeFace2x2 
         @start-swipe="(corner) => startSwipe('front', corner)" 
-        @end-swipe="(corner) => endSwipe('front', corner)" 
+        @end-swipe="(corner) => endSwipe('front', corner)"
+        @mobile-swipe="(origin, direction) => mobileSwipe(origin, direction, 'front')"
         :face="cube.front"
         />
     </div>
@@ -13,6 +14,7 @@
         <CubeFace2x2 
         @start-swipe="(corner) => startSwipe('back', corner)"
         @end-swipe="(corner) => endSwipe('back', corner)" 
+        @mobile-swipe="(origin, direction) => mobileSwipe(origin, direction, 'back')"
         :face="cube.back"
         />
     </div>
@@ -20,12 +22,14 @@
         <CubeFace2x2
         @start-swipe="(corner) => startSwipe('right', corner)" 
         @end-swipe="(corner) => endSwipe('right', corner)"  
+        @mobile-swipe="(origin, direction) => mobileSwipe(origin, direction, 'right')"
         :face="cube.right"/>
     </div>
     <div class="cube__face cube__face--left">
         <CubeFace2x2
         @start-swipe="(corner) => startSwipe('left', corner)" 
         @end-swipe="(corner) => endSwipe('left', corner)"  
+        @mobile-swipe="(origin, direction) => mobileSwipe(origin, direction, 'left')"
         :face="cube.left"
         />
     </div>
@@ -33,6 +37,7 @@
         <CubeFace2x2 
         @start-swipe="(corner) => startSwipe('top', corner)" 
         @end-swipe="(corner) => endSwipe('top', corner)" 
+        @mobile-swipe="(origin, direction) => mobileSwipe(origin, direction, 'top')"
         :face="cube.top"
         />
     </div>
@@ -40,6 +45,7 @@
         <CubeFace2x2 
         @start-swipe="(corner) => startSwipe('bottom', corner)" 
         @end-swipe="(corner) => endSwipe('bottom', corner)" 
+        @mobile-swipe="(origin, direction) => mobileSwipe(origin, direction, 'bottom')"
         :face="cube.bottom"
         />
     </div>
@@ -54,25 +60,9 @@
 <div class="slider-wrapper">
   <label>z:</label><input class="slider" v-model="z" type="range" min="-360" max="360">
 </div>
-<div>
-    <button @click="u">U</button>
-    <button @click="r">R</button>
-    <button @click="f">F</button>
-    <button @click="l">L</button>
-    <button @click="b">B</button>
-    <button @click="d">D</button>
-</div>
-<div>
-    <button @click="uPrime">U'</button>
-    <button @click="rPrime">R'</button>
-    <button @click="fPrime">F'</button>
-    <button @click="lPrime">L'</button>
-    <button @click="bPrime">B'</button>
-    <button @click="dPrime">D'</button>
-</div>
 <button class="wide-button" @click="scramble">Scramble</button>
 <button class="wide-button" @click="reset">Reset</button>
-<button class="wide-button" @click="solve">Solve</button>
+<!-- <button class="wide-button" @click="solve">Solve</button> -->
 </div>
 </template>
   
@@ -146,12 +136,12 @@ methods: {
     this.$refs.cube.style.transform = rotateParam;
   },
   startSwipe(face, corner) {
-    console.log("Start swipe: " + face + ", " + corner);
+    console.log("starting: " + corner);
     this.start.face = face;
     this.start.corner = corner;
   },
   endSwipe(face, corner) {
-    console.log("End swipe: " + face + ", " + corner);
+    console.log("ending: " + corner);
     this.end.face = face;
     this.end.corner = corner;
 
@@ -181,9 +171,33 @@ methods: {
     this.start.face = 'front';
     this.start.corner = 0;
   },
+  mobileSwipe(origin, direction, face) {
+    console.log(direction + " from " + origin);
+    console.log("z: " + this.z);
+
+    if (this.z > -45 && this.z < 45) {
+      this.startSwipe(face, origin);
+      if (origin === 0 && direction === 'right') {
+        this.endSwipe(face, 1);
+      } else if (origin === 0 && direction === 'down') {
+        this.endSwipe(face, 3);
+      } else if (origin === 3 && direction === 'up')  {
+        this.endSwipe(face, 0);
+      } else if (origin === 1 && direction === 'left') {
+        this.endSwipe(face, 0);
+      } else if (origin == 1 && direction === 'down') {
+        this.endSwipe(face, 2);
+      } else if (origin === 2 && direction === 'up') {
+        this.endSwipe(face, 1);
+      } else if (origin === 3 && direction === 'right') {
+        th
+      }
+    }
+
+  },
   handleUandD() {
     if (this.start.corner == 0 && this.end.corner == 1) {
-            this.uPrime();
+        this.uPrime();
       } else if (this.start.corner === 1 && this.end.corner === 0) {
         this.u();
       } else if (this.start.corner === 3 && this.end.corner === 2) {

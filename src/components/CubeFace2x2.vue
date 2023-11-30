@@ -3,32 +3,36 @@
         <div>
             <div 
             ref="c0"
+            data-corner="0"
             @mousedown="$emit('start-swipe', 0)" 
             @mouseup="$emit('end-swipe', 0)"
-            @touchstart="start = 0"
+            @touchmove="touchMove($event)"
             :class="['square', face[0]]"
             />
             <div
             ref="c3"
+            data-corner="3"
             @mousedown="$emit('start-swipe', 3)"
             @mouseup="$emit('end-swipe', 3)"
-            @touchstart="start = 3"
+            @touchmove="touchMove($event)"
             :class="['square', face[3]]"
             />
         </div>
         <div>
             <div 
             ref="c1"
+            data-corner="1"
             @mousedown="$emit('start-swipe', 1)"
             @mouseup="$emit('end-swipe', 1)" 
-            @touchstart="start = 1"
+            @touchmove="touchMove($event)"
             :class="['square', face[1]]"
             />
             <div 
             ref="c2"
+            data-corner="2"
             @mousedown="$emit('start-swipe', 2)"
             @mouseup="$emit('end-swipe', 2)"
-            @touchstart="start = 2"
+            @touchmove="touchMove($event)"
             :class="['square', face[2]]"
             />
         </div>
@@ -38,68 +42,61 @@
 <script>
 
 import { useSwipe } from '@vueuse/core';
-import { ref } from 'vue';
+import { ref, toRaw } from 'vue';
 
 export default {
     name: 'CubeFace2x2',
     props: {
         face: Array
     },
-    data() {
-        return {
-            start: null
+    methods: {
+        touchMove(event) {
+            let pageX = event.touches[0].pageX;
+            let pageY = event.touches[0].pageY;
+            this.end = window.document.elementFromPoint(pageX, pageY).dataset.corner;
         }
     },
     setup(props, context) {
+
+    const end = ref(-1);
+        
     const c0 = ref(null)
     const { isSwiping, direction } = useSwipe(c0, {
         onSwipeEnd(e, direction) {
+            console.log("Swipe ending on: " + end.value);
             context.emit('start-swipe', 0);
-            if (direction === 'right') {
-                context.emit('end-swipe', 1);
-            } else if (direction === 'down') {
-                context.emit('end-swipe', 3);
-            }
+            context.emit('end-swipe', Number(end.value));
         }
     })
 
     const c1 = ref(null)
     const { isSwiping1, direction1 } = useSwipe(c1, {
         onSwipeEnd(e, direction) {
+            console.log("Swipe ending on: " + end.value);
             context.emit('start-swipe', 1);
-            if (direction === 'left') {
-                context.emit('end-swipe', 0);
-            } else if (direction === 'down') {
-                context.emit('end-swipe', 2);
-            }
+            context.emit('end-swipe', Number(end.value));
         }
     })
 
     const c2 = ref(null)
     const { isSwiping2, direction2 } = useSwipe(c2, {
         onSwipeEnd(e, direction) {
+            console.log("Swipe ending on: " + end.value);
             context.emit('start-swipe', 2);
-            if (direction === 'left') {
-                context.emit('end-swipe', 3);
-            } else if (direction === 'up') {
-                context.emit('end-swipe', 1);
-            }
+            context.emit('end-swipe', Number(end.value));
         }
     })
 
     const c3 = ref(null)
     const { isSwiping3, direction3 } = useSwipe(c3, {
         onSwipeEnd(e, direction) {
+            console.log("Swipe ending on: " + end.value);
             context.emit('start-swipe', 3);
-            if (direction === 'right') {
-                context.emit('end-swipe', 2);
-            } else if (direction === 'up') {
-                context.emit('end-swipe', 0);
-            }
+            context.emit('end-swipe', Number(end.value));
         }
     })
 
-    return { c0, isSwiping, direction, c1, isSwiping1, direction1, c2, isSwiping2, direction2, c3, isSwiping3, direction3 }
+    return { c0, isSwiping, direction, c1, isSwiping1, direction1, c2, isSwiping2, direction2, c3, isSwiping3, direction3, end }
   }
 }
 </script>
