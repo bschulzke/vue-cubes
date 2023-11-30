@@ -590,7 +590,8 @@ label {
 }
 
 .slider {
-  width: 20rem;
+  width: 90vw;
+  height: 3rem;
 }
 
 * { box-sizing: border-box; }
@@ -643,6 +644,13 @@ label { margin-right: 10px; }
 
 .loader-wrapper {
   height: 2rem;
+}
+
+@media only screen 
+and (min-width : 1224px) {
+  .slider {
+    width: 50vw;
+  }
 }
 
 </style>
