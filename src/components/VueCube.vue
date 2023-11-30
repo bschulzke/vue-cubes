@@ -54,9 +54,15 @@
 <div class="slider-wrapper">
   <label>z:</label><input class="slider" v-model="z" type="range" min="-360" max="360">
 </div>
-<button class="wide-button" @click="scramble">Scramble</button>
-<button class="wide-button" @click="reset">Reset</button>
-<!-- <button class="wide-button" @click="solve">Solve</button> -->
+<div>
+  <button class="button" @click="scramble">Scramble</button>
+  <button class="button" @click="reset">Reset</button>
+</div>
+<div>
+  <button :disabled="!history.length" class="button" @click="undo">Undo</button>
+  <button :disabled="!undoHistory.length" class="button" @click="redo">Redo</button>
+</div>
+<!-- <button class="button" @click="solve">Solve</button> -->
 </div>
 </template>
   
@@ -67,7 +73,6 @@ export default {
 name: 'VueCube',
 mounted() {
     this.showFront();
-    this.history.push(this.getCubeCopy(this.cube));
 },
 components: {
     CubeFace2x2
@@ -83,6 +88,7 @@ data() {
             bottom: ['white', 'white', 'white', 'white']
         },
         history: [],
+        undoHistory: [],
         start: {
           face: null,
           corner: null
@@ -302,7 +308,21 @@ methods: {
         faceCopy[3] = face[0];
         return faceCopy;
     },
+    save() {
+      this.history.push(this.getCubeCopy());
+    },
+    undo() {
+      this.undoHistory.push(this.getCubeCopy());
+      this.cube = this.history.pop();
+    },
+    redo() {
+      this.history.push(this.getCubeCopy());
+      this.cube = this.undoHistory.pop();
+    },
     u() {
+
+        this.save();
+
         let cubeCopy = this.getCubeCopy();
 
         cubeCopy.front[0] = this.cube.right[0];
@@ -319,6 +339,8 @@ methods: {
         this.cube = cubeCopy;
     },
     uPrime() {
+        this.save();
+
         let cubeCopy = this.getCubeCopy();
 
         cubeCopy.front[0] = this.cube.left[0];
@@ -335,6 +357,10 @@ methods: {
         this.cube = cubeCopy;
     },
     r() {
+        this.save();
+
+        this.history.push(this.getCubeCopy());
+
         let cubeCopy = this.getCubeCopy();
 
         cubeCopy.front[1] = this.cube.bottom[1];
@@ -354,6 +380,8 @@ methods: {
         this.cube = cubeCopy;
     },
     rPrime() {
+      this.save();
+
       let cubeCopy = this.getCubeCopy();
 
       cubeCopy.front[1] = this.cube.top[1];
@@ -370,6 +398,8 @@ methods: {
       this.cube = cubeCopy;
     },
     f() {
+      this.save();
+
       let cubeCopy = this.getCubeCopy();
 
       cubeCopy.bottom[0] = this.cube.right[3];
@@ -386,6 +416,8 @@ methods: {
       this.cube = cubeCopy;
   },
   fPrime() {
+    this.save();
+
     let cubeCopy = this.getCubeCopy();
 
     cubeCopy.bottom[0] = this.cube.left[1];
@@ -402,6 +434,7 @@ methods: {
     this.cube = cubeCopy;
   },
   l() {
+    this.save();
     let cubeCopy = this.getCubeCopy();
 
     cubeCopy.front[0] = this.cube.top[0];
@@ -418,6 +451,7 @@ methods: {
     this.cube = cubeCopy;
   },
   lPrime() {
+    this.save();
     let cubeCopy = this.getCubeCopy();
 
     cubeCopy.front[0] = this.cube.bottom[0];
@@ -434,6 +468,7 @@ methods: {
     this.cube = cubeCopy;
   },
   b() {
+    this.save();
     let cubeCopy = this.getCubeCopy();
 
     cubeCopy.bottom[2] = this.cube.left[3];
@@ -450,6 +485,7 @@ methods: {
     this.cube = cubeCopy;
   },
   bPrime() {
+    this.save();
     let cubeCopy = this.getCubeCopy();
 
     cubeCopy.bottom[2] = this.cube.right[1];
@@ -466,6 +502,7 @@ methods: {
     this.cube = cubeCopy;
   },
   d() {
+    this.save();
     let cubeCopy = this.getCubeCopy();
 
     cubeCopy.front[2] = this.cube.left[2];
@@ -482,6 +519,7 @@ methods: {
     this.cube = cubeCopy;
   },
   dPrime() {
+    this.save();
     let cubeCopy = this.getCubeCopy();
 
     cubeCopy.front[2] = this.cube.right[2];
@@ -538,16 +576,12 @@ methods: {
 <style scoped>
 @import '/src/assets/css/throbber-loader.css';
 
-button {
-    min-width: 3.5rem;
-}
-
 .cube-simulator {
   width: 100vw;
   height: 100vh;
 }
 
-.wide-button {
+.button {
   width: 7rem;
 }
 
