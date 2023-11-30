@@ -53,7 +53,9 @@ export default {
         touchMove(event) {
             let pageX = event.touches[0].pageX;
             let pageY = event.touches[0].pageY;
-            this.end = window.document.elementFromPoint(pageX, pageY).dataset.corner;
+            if (window.document.elementFromPoint(pageX, pageY).dataset && window.document.elementFromPoint(pageX, pageY).dataset.corner) {
+                this.end = window.document.elementFromPoint(pageX, pageY).dataset.corner;
+            }
         }
     },
     setup(props, context) {
