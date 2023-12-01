@@ -8,7 +8,6 @@
         @end-swipe="(corner) => endSwipe('front', corner)"
         :face="cube.front"
         />
-      <hr>
     </div>
     <div class="cube__face cube__face--back">
         <CubeFace2x2 
