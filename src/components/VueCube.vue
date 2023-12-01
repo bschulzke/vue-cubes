@@ -8,6 +8,7 @@
         @end-swipe="(corner) => endSwipe('front', corner)"
         :face="cube.front"
         />
+      <hr>
     </div>
     <div class="cube__face cube__face--back">
         <CubeFace2x2 
@@ -439,8 +440,8 @@ methods: {
 
     cubeCopy.front[0] = this.cube.top[0];
     cubeCopy.front[3] = this.cube.top[3];
-    cubeCopy.back[1] = this.cube.bottom[0];
-    cubeCopy.back[2] = this.cube.bottom[3];
+    cubeCopy.back[1] = this.cube.bottom[3];
+    cubeCopy.back[2] = this.cube.bottom[0];
     cubeCopy.bottom[0] = this.cube.front[0];
     cubeCopy.bottom[3] = this.cube.front[3];
     cubeCopy.top[0] = this.cube.back[2];
