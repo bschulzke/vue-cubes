@@ -54,6 +54,7 @@
 <div class="slider-wrapper">
   <label>z:</label><input class="slider" v-model="z" type="range" min="-360" max="360">
 </div>
+<button class="wide-button" @click="solve">Solve</button>
 <div>
   <button class="button" @click="scramble">Scramble</button>
   <button class="button" @click="reset">Reset</button>
@@ -127,6 +128,7 @@ watch: {
   },
 },
 methods: {
+  // TODO: Extract cube methods into separate JS file for modularity and reusability
   rotateCube(newX, newY, newZ) { 
     this.x = newX;
     this.y = newY;
@@ -359,8 +361,6 @@ methods: {
     r() {
         this.save();
 
-        this.history.push(this.getCubeCopy());
-
         let cubeCopy = this.getCubeCopy();
 
         cubeCopy.front[1] = this.cube.bottom[1];
@@ -583,6 +583,10 @@ methods: {
 
 .button {
   width: 7rem;
+}
+
+.wide-button {
+  width: 14rem;
 }
 
 label {

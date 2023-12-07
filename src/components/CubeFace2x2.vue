@@ -42,7 +42,7 @@
 <script>
 
 import { useSwipe } from '@vueuse/core';
-import { ref, toRaw } from 'vue';
+import { ref } from 'vue';
 
 export default {
     name: 'CubeFace2x2',

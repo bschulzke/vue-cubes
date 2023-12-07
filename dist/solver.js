@@ -1,8 +1,8 @@
 onmessage = (e) => {
-    solveCube(e);
+    startWorker(e);
 }
 
-async function solveCube(e) {
+async function startWorker(e) {
     await new Promise(r => setTimeout(r, 500));
     console.log("Received message from main script");
     console.log(e.data);
