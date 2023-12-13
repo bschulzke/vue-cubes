@@ -66,9 +66,9 @@ async function startWorker(e) {
     const backwardPathMap = [];
 
     console.log("Beginning bidirectional search...")
-    i = 10
+    let max_iterations = 10000
     let currentBackward = null;
-    while (queueForward.length > 0 && queueBackward.length > 0 && i > 0) {
+    while (queueForward.length > 0 && queueBackward.length > 0 && max_iterations > 0) {
 
         // Forward BFS
         const currentForward = queueForward.shift();
@@ -99,12 +99,12 @@ async function startWorker(e) {
         for (let n1 of forwardPathMap) {
             for (let n2 of backwardPathMap) {
                 if (JSON.stringify(n1.cube) == JSON.stringify(n2.cube)) {
-                    return n1.path + n2.path 
+                    return n1.path + n2.path.split("").reverse().join("") 
                 }
             }
         }
         
-        i--
+        max_iterations--
     }
 
     return null; // No solution found

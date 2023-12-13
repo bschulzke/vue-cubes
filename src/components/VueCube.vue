@@ -63,7 +63,6 @@
   <button :disabled="!history.length" class="button" @click="undo">Undo</button>
   <button :disabled="!undoHistory.length" class="button" @click="redo">Redo</button>
 </div>
-<!-- <button class="button" @click="solve">Solve</button> -->
 </div>
 </template>
   
@@ -280,15 +279,53 @@ methods: {
             top: ['yellow', 'yellow', 'yellow', 'yellow'],
             bottom: ['white', 'white', 'white', 'white']
         };
+      this.history = []
+      this.undoHistory = []
     },
-    solve() {
+    async solve() {
       let worker = new Worker("solver.js");
       console.log("Starting up the worker...")
       worker.postMessage(this.getCubeCopy());
       this.loading = true;
       worker.onmessage = (e) => {
         console.log("Response from solver worker: " + e.data);
+        this.doMoves(e.data);
         this.loading = false;
+        worker.terminate();
+      }
+    },
+    async doMoves(moveString) {
+      for (let i = 0; i < moveString.length; i++) {
+        await new Promise(r => setTimeout(r, 500));
+        this.doMove(moveString.charAt(i));
+      }
+    },
+    doMove(move) {
+      switch (move) {
+        case 'u':
+            return this.u()
+        case 'U':
+            return this.uPrime()
+        case 'd':
+            return this.d()
+        case 'D':
+            return this.dPrime()
+        case 'l':
+            return this.l()
+        case 'L':
+            return this.lPrime()
+        case 'r':
+            return this.r()
+        case 'R':
+            return this.rPrime()
+        case 'f':
+            return this.f();
+        case 'F':
+            return this.fPrime()
+        case 'b':
+            return this.b()
+        case 'B':
+            return this.bPrime()
       }
     },
     getCubeCopy() {
@@ -322,7 +359,6 @@ methods: {
       this.cube = this.undoHistory.pop();
     },
     u() {
-
         this.save();
 
         let cubeCopy = this.getCubeCopy();
@@ -341,8 +377,8 @@ methods: {
         this.cube = cubeCopy;
     },
     uPrime() {
-        this.save();
-
+      this.save();
+      
         let cubeCopy = this.getCubeCopy();
 
         cubeCopy.front[0] = this.cube.left[0];
@@ -355,14 +391,14 @@ methods: {
         cubeCopy.right[1] = this.cube.front[1];
 
         cubeCopy.top = this.counterclockwise(cubeCopy.top);
-
+        
         this.cube = cubeCopy;
     },
     r() {
         this.save();
 
         let cubeCopy = this.getCubeCopy();
-
+        
         cubeCopy.front[1] = this.cube.bottom[1];
         cubeCopy.front[2] = this.cube.bottom[2];
 
@@ -374,12 +410,12 @@ methods: {
         
         cubeCopy.bottom[1] = this.cube.back[3];
         cubeCopy.bottom[2] = this.cube.back[0];
-
+        
         cubeCopy.right = this.clockwise(cubeCopy.right);
-
+        
         this.cube = cubeCopy;
-    },
-    rPrime() {
+      },
+      rPrime() {
       this.save();
 
       let cubeCopy = this.getCubeCopy();
