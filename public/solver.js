@@ -1,3 +1,5 @@
+// TODO: Extract cube functions into separate JavaScript file for reusability and modularity.
+
 onmessage = (e) => {
     startWorker(e);
 }
@@ -11,20 +13,6 @@ async function startWorker(e) {
 
     postMessage(solutionPath);
 }
-
-class Node {
-    constructor(cube, parent, move, g, h) {
-      this.cube = cube;
-      this.parent = parent;
-      this.move = move;
-      this.g = g; // Cost from the start node to this node
-      this.h = h; // Heuristic estimate of cost from this node to the goal
-    }
-  
-    get f() {
-      return this.g + this.h; // Total cost
-    }
-  }
   
   function solveCube(cube) {
     const isSolved = (cube) => { 
@@ -47,7 +35,6 @@ class Node {
         }
         return solved;
     }
-    const getMoves = () => { return ['u','U','d','D','l','L','r','R','f','F','b','B']; }
     const evaluate = (cube) => { 
         return evaluateFace(cube.front) 
         + evaluateFace(cube.back) 
@@ -69,14 +56,137 @@ class Node {
     
     let moves = getMoves();
 
-    for (let move of moves) {
-        let newCube = makeMove(cube, move);
-        let utility = evaluate(newCube);
-        console.log("Move: " + move + ", utility: " + utility);
+    const queueForward = [{cube: cube, path: ""}];
+    const queueBackward = [{cube: getSolvedCube(), path: ""}]; // Starting from the solved state
+
+    // Initialize visited sets for forward and backward BFS
+    const visitedForward = new Set();
+    const visitedBackward = new Set();
+    const forwardPathMap = [];
+    const backwardPathMap = [];
+
+    console.log("Beginning bidirectional search...")
+    i = 10
+    let currentBackward = null;
+    while (queueForward.length > 0 && queueBackward.length > 0 && i > 0) {
+
+        // Forward BFS
+        const currentForward = queueForward.shift();
+        
+        visitedForward.add(JSON.stringify(currentForward.cube));
+        forwardPathMap.push(currentForward);
+        
+        const neighborsForward = generateNeighbors(currentForward);
+        
+        for (const neighbor of neighborsForward) {
+            if (!visitedForward.has(JSON.stringify(neighbor))) {
+                queueForward.push(neighbor);
+            }
+        }
+        
+        // Backward BFS
+        currentBackward = queueBackward.shift();
+        visitedBackward.add(JSON.stringify(currentBackward.cube));
+        backwardPathMap.push(currentBackward);
+        
+        const neighborsBackward = generateNeighborsBackward(currentBackward);
+        for (const neighbor of neighborsBackward) {
+            if (!visitedBackward.has(JSON.stringify(neighbor))) {
+                queueBackward.push(neighbor);
+            }
+        }
+
+        for (let n1 of forwardPathMap) {
+            for (let n2 of backwardPathMap) {
+                if (JSON.stringify(n1.cube) == JSON.stringify(n2.cube)) {
+                    return n1.path + n2.path 
+                }
+            }
+        }
+        
+        i--
     }
-  
+
     return null; // No solution found
+  
   }
+
+  const getMoves = () => { return ['u','U','d','D','l','L','r','R','f','F','b','B']; }
+
+  // Helper function to generate neighbors for forward BFS
+function generateNeighbors(node) {
+    const neighbors = [];
+    for (const move of getMoves()) {
+        const newCube = makeMove(node.cube, move);
+        neighbors.push({cube: newCube, path: node.path + move});
+    }
+    return neighbors;
+}
+
+function cubesAreEquivalent(a, b) {
+    return JSON.stringify(a.front) === JSON.stringify(b.front)
+        && JSON.stringify(a.back) === JSON.stringify(b.back)
+        && JSON.stringify(a.left) === JSON.stringify(b.left)
+        && JSON.stringify(a.right) === JSON.stringify(a.right)
+}
+
+// Helper function to generate neighbors for backward BFS
+function generateNeighborsBackward(node) {
+    const neighbors = [];
+    for (const move of getMoves()) {
+        const newCube = makeMoveBackward(node.cube, move);
+        neighbors.push({cube: newCube, path: node.path + move});
+    }
+    return neighbors;
+}
+
+// Helper function to make a move in backward direction
+function makeMoveBackward(cube, move) {
+    // Implement the reverse of each move logic here
+    // Example: For 'u', use 'U' logic in reverse
+    switch (move) {
+        case 'u':
+            return makeMove(cube, 'U')
+        case 'U':
+            return makeMove(cube, 'u')
+        case 'd':
+            return makeMove(cube, 'D')
+        case 'D':
+            return makeMove(cube, 'd')
+        case 'l':
+            return makeMove(cube, 'L')
+        case 'L':
+            return makeMove(cube, 'l')
+        case 'r':
+            return makeMove(cube, 'R')
+        case 'R':
+            return makeMove(cube, 'r')
+        case 'f':
+            return makeMove(cube, 'F')
+        case 'F':
+            return makeMove(cube, 'f')
+        case 'b':
+            return makeMove(cube, 'B')
+        case 'B':
+            return makeMove(cube, 'b')
+        
+    }
+    // (you may need to adjust based on your specific cube representation)
+}
+
+// Helper function to get the solved cube state
+function getSolvedCube() {
+    // Implement the logic to create a solved cube state
+    // (you may need to adjust based on your specific cube representation)
+    return {
+        front: ['red', 'red', 'red', 'red'],
+        back: ['orange', 'orange', 'orange', 'orange'],
+        right: ['green', 'green', 'green', 'green'],
+        left: ['blue', 'blue', 'blue', 'blue'],
+        top: ['yellow', 'yellow', 'yellow', 'yellow'],
+        bottom: ['white', 'white', 'white', 'white']
+    }
+}
 
   function makeMove(cube, move) {
     // 'b','B'
@@ -106,6 +216,7 @@ class Node {
         case 'B':
             return bPrime(cube);
     }
+
   }
 
   // TODO: Refactor cube into a JavaScript class which can be defined once and imported by both VueCube and by solver.js
