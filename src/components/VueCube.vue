@@ -45,6 +45,9 @@
     </div>
   </div>
 </div>
+<div class="loader-wrapper">
+  <div v-if="loading" class="throbber-loader"></div>
+</div>
 <div class="slider-wrapper">
   <label>x:</label><input class="slider" v-model="x" type="range" min="-360" max="360">   
 </div>
@@ -291,6 +294,9 @@ methods: {
         console.log("Response from solver worker: " + e.data);
         this.doMoves(e.data);
         this.loading = false;
+        if (e.data.length === 0) {
+          alert("Already solved!")
+        }
         worker.terminate();
       }
     },
@@ -601,7 +607,7 @@ methods: {
   },
   scramble() {
     let symbols = ['u','U','d','D','l','L','r','R','f','F','b','B'];
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 100; i++) {
       this.makeMove(symbols[Math.floor(Math.random() * symbols.length)])
     }
   }
@@ -610,7 +616,6 @@ methods: {
 </script>
 
 <style scoped>
-@import '/src/assets/css/throbber-loader.css';
 
 .cube-simulator {
   width: 100vw;
@@ -633,6 +638,10 @@ label {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.loader-wrapper {
+  height: 2rem;
 }
 
 .slider-wrapper-vertical {
@@ -714,6 +723,94 @@ and (min-width : 1224px) {
     width: 1rem;
   }
 }
+
+/* Copyright (c) 2013 John W. Long and Julia Elman
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+@-moz-keyframes throbber-loader {
+    0% {
+      background: #dde2e7;
+    }
+    10% {
+      background: #6b9dc8;
+    }
+    40% {
+      background: #dde2e7;
+    }
+  }
+  @-webkit-keyframes throbber-loader {
+    0% {
+      background: #dde2e7;
+    }
+    10% {
+      background: #6b9dc8;
+    }
+    40% {
+      background: #dde2e7;
+    }
+  }
+  @keyframes throbber-loader {
+    0% {
+      background: #dde2e7;
+    }
+    10% {
+      background: #6b9dc8;
+    }
+    40% {
+      background: #dde2e7;
+    }
+  }
+  /* :not(:required) hides these rules from IE9 and below */
+  .throbber-loader:not(:required) {
+    -moz-animation: throbber-loader 2000ms 300ms infinite ease-out;
+    -webkit-animation: throbber-loader 2000ms 300ms infinite ease-out;
+    animation: throbber-loader 2000ms 300ms infinite ease-out;
+    background: #dde2e7;
+    display: inline-block;
+    position: relative;
+    text-indent: -9999px;
+    width: 0.9em;
+    height: 1.5em;
+    margin: 0 1.6em;
+  }
+  .throbber-loader:not(:required):before, .throbber-loader:not(:required):after {
+    background: #dde2e7;
+    content: '\x200B';
+    display: inline-block;
+    width: 0.9em;
+    height: 1.5em;
+    position: absolute;
+    top: 0;
+  }
+  .throbber-loader:not(:required):before {
+    -moz-animation: throbber-loader 2000ms 150ms infinite ease-out;
+    -webkit-animation: throbber-loader 2000ms 150ms infinite ease-out;
+    animation: throbber-loader 2000ms 150ms infinite ease-out;
+    left: -1.6em;
+  }
+  .throbber-loader:not(:required):after {
+    -moz-animation: throbber-loader 2000ms 450ms infinite ease-out;
+    -webkit-animation: throbber-loader 2000ms 450ms infinite ease-out;
+    animation: throbber-loader 2000ms 450ms infinite ease-out;
+    right: -1.6em;
+  }
 
 </style>
   
