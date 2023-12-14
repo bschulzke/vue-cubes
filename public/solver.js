@@ -53,11 +53,26 @@ async function startWorker(e) {
        }
        return count;
     }
-    
-    let moves = getMoves();
 
+    const shiftBest = (queue) => {
+        // let bestNode = queue.at(queue.length - 1)
+        // let bestValue = evaluate(bestNode.cube)
+        // let index = queue.length - 1
+        // for (let i = 0; i < queue.length; i++) {
+        //     let currVal = evaluate(queue.at(i).cube)
+        //     if (currVal > bestValue) {
+        //         bestNode = queue.at(i)
+        //         bestValue = evaluate(bestNode.cube)
+        //         index = i
+        //     }
+        // }
+        // queue.splice(index, 1)
+        // return bestNode
+        return queue.shift()
+    }
+    
     const queueForward = [{cube: cube, path: ""}];
-    const queueBackward = [{cube: getSolvedCube(), path: ""}]; // Starting from the solved state
+    const queueBackward = getBackwardStarts(); // Starting from the solved state
 
     // Initialize visited sets for forward and backward BFS
     const visitedForward = new Set();
@@ -71,12 +86,22 @@ async function startWorker(e) {
     while (queueForward.length > 0 && queueBackward.length > 0 && max_iterations > 0) {
 
         // Forward BFS
-        const currentForward = queueForward.shift();
+        const currentForward = shiftBest(queueForward);
         
         visitedForward.add(JSON.stringify(currentForward.cube));
         forwardPathMap.push(currentForward);
         
         const neighborsForward = generateNeighbors(currentForward);
+
+        for (list of queueBackward) {
+            for (backNode of list) {
+                for (forwardNode of queueForward) {
+                    if (JSON.stringify(backNode.cube) == JSON.stringify(forwardNode.cube)) {
+                        return forwardNode.path + backNode.path.split("").reverse().join("") 
+                    }
+                }
+            }
+        }
         
         for (const neighbor of neighborsForward) {
             if (!visitedForward.has(JSON.stringify(neighbor))) {
@@ -85,21 +110,23 @@ async function startWorker(e) {
         }
         
         // Backward BFS
-        currentBackward = queueBackward.shift();
-        visitedBackward.add(JSON.stringify(currentBackward.cube));
-        backwardPathMap.push(currentBackward);
+        for (let i = 0; i < queueBackward.length; i++) {
+            currentBackward = shiftBest(queueBackward.at(i));
+            visitedBackward.add(JSON.stringify(currentBackward.cube));
+            backwardPathMap.push(currentBackward);
         
-        const neighborsBackward = generateNeighborsBackward(currentBackward);
-        for (const neighbor of neighborsBackward) {
-            if (!visitedBackward.has(JSON.stringify(neighbor))) {
-                queueBackward.push(neighbor);
+            const neighborsBackward = generateNeighborsBackward(currentBackward);
+            for (const neighbor of neighborsBackward) {
+                if (!visitedBackward.has(JSON.stringify(neighbor))) {
+                    queueBackward.at(i).push(neighbor);
+                }
             }
-        }
 
-        for (let n1 of forwardPathMap) {
-            for (let n2 of backwardPathMap) {
-                if (JSON.stringify(n1.cube) == JSON.stringify(n2.cube)) {
-                    return n1.path + n2.path.split("").reverse().join("") 
+            for (let n1 of forwardPathMap) {
+                for (let n2 of backwardPathMap) {
+                    if (JSON.stringify(n1.cube) == JSON.stringify(n2.cube)) {
+                        return n1.path + n2.path.split("").reverse().join("") 
+                    }
                 }
             }
         }
@@ -171,13 +198,54 @@ function makeMoveBackward(cube, move) {
             return makeMove(cube, 'b')
         
     }
-    // (you may need to adjust based on your specific cube representation)
 }
 
-// Helper function to get the solved cube state
-function getSolvedCube() {
-    // Implement the logic to create a solved cube state
-    // (you may need to adjust based on your specific cube representation)
+function getBackwardStarts() {
+    return [
+        [{cube: redYellow(), path: ""}],
+        [{cube: redWhite(), path: ""}],
+        [{cube: redGreen(), path: ""}],
+        [{cube: redBlue(), path: ""}],
+
+        [{cube: orangeYellow(), path: ""}],
+        [{cube: orangeWhite(), path: ""}],
+        [{cube: orangeBlue(), path: ""}],
+        [{cube: orangeGreen(), path: ""}],
+
+        [{cube: whiteRed(), path: ""}],
+        [{cube: whiteOrange(), path: ""}],
+        [{cube: whiteGreen(), path: ""}],
+        [{cube: whiteBlue(), path: ""}],
+
+        [{cube: blueYellow(), path: ""}],
+        [{cube: blueWhite(), path: ""}],
+        [{cube: blueRed(), path: ""}],
+        [{cube: blueOrange(), path: ""}],
+
+        [{cube: greenYellow(), path: ""}],
+        [{cube: greenWhite(), path: ""}],
+        [{cube: greenRed(), path: ""}],
+        [{cube: greenOrange(), path: ""}],
+
+        [{cube: yellowRed(), path: ""}],
+        [{cube: yellowOrange(), path: ""}],
+        [{cube: yellowGreen(), path: ""}],
+        [{cube: yellowBlue(), path: ""}],
+    ]
+}
+
+function redWhite() {
+    return {
+        front: ['red', 'red', 'red', 'red'],
+        back: ['orange', 'orange', 'orange', 'orange'],
+        right: ['blue', 'blue', 'blue', 'blue'],
+        left: ['green', 'green', 'green', 'green'],
+        top: ['white', 'white', 'white', 'white'],
+        bottom: ['yellow', 'yellow', 'yellow', 'yellow']
+    }
+}
+
+function redYellow() {
     return {
         front: ['red', 'red', 'red', 'red'],
         back: ['orange', 'orange', 'orange', 'orange'],
@@ -187,6 +255,250 @@ function getSolvedCube() {
         bottom: ['white', 'white', 'white', 'white']
     }
 }
+
+function redGreen() {
+    return {
+        front: ['red', 'red', 'red', 'red'],
+        back: ['orange', 'orange', 'orange', 'orange'],
+        right: ['white', 'white', 'white', 'white'],
+        left: ['yellow', 'yellow', 'yellow', 'yellow'],
+        top: ['green', 'green', 'green', 'green'],
+        bottom: ['blue', 'blue', 'blue', 'blue']
+    }
+}
+
+function redBlue() {
+    return {
+        front: ['red', 'red', 'red', 'red'],
+        back: ['orange', 'orange', 'orange', 'orange'],
+        right: ['yellow', 'yellow', 'yellow', 'yellow'],
+        left: ['white', 'white', 'white', 'white'],
+        top: ['blue', 'blue', 'blue', 'blue'],
+        bottom: ['green', 'green', 'green', 'green']
+    }
+}
+
+function orangeWhite() {
+    return {
+        front: ['orange', 'orange', 'orange', 'orange'],
+        back: ['red', 'red', 'red', 'red'],
+        right: ['green', 'green', 'green', 'green'],
+        left: ['blue', 'blue', 'blue', 'blue'],
+        top: ['white', 'white', 'white', 'white'],
+        bottom: ['yellow', 'yellow', 'yellow', 'yellow']
+    }
+}
+
+function orangeYellow() {
+    return {
+        front: ['orange', 'orange', 'orange', 'orange'],
+        back: ['red', 'red', 'red', 'red'],
+        right: ['blue', 'blue', 'blue', 'blue'],
+        left: ['green', 'green', 'green', 'green'],
+        top: ['yellow', 'yellow', 'yellow', 'yellow'],
+        bottom: ['white', 'white', 'white', 'white']
+    }
+}
+
+function orangeBlue() {
+    return {
+        front: ['orange', 'orange', 'orange', 'orange'],
+        back: ['red', 'red', 'red', 'red'],
+        right: ['white', 'white', 'white', 'white'],
+        left: ['yellow', 'yellow', 'yellow', 'yellow'],
+        top: ['blue', 'blue', 'blue', 'blue'],
+        bottom: ['green', 'green', 'green', 'green']
+    }
+}
+
+function orangeGreen() {
+    return {
+        front: ['orange', 'orange', 'orange', 'orange'],
+        back: ['red', 'red', 'red', 'red'],
+        right: ['yellow', 'yellow', 'yellow', 'yellow'],
+        left: ['white', 'white', 'white', 'white'],
+        top: ['green', 'green', 'green', 'green'],
+        bottom: ['blue', 'blue', 'blue', 'blue']
+    }
+}
+
+function greenYellow() {
+    return {
+        front: ['green', 'green', 'green', 'green'],
+        back: ['blue', 'blue', 'blue', 'blue'],
+        right: ['orange', 'orange', 'orange', 'orange'],
+        left: ['red', 'red', 'red', 'red'],
+        top: ['yellow', 'yellow', 'yellow', 'yellow'],
+        bottom: ['white', 'white', 'white', 'white']
+    }
+}
+
+function greenWhite() {
+    return {
+        front: ['green', 'green', 'green', 'green'],
+        back: ['blue', 'blue', 'blue', 'blue'],
+        right: ['red', 'red', 'red', 'red'],
+        left: ['orange', 'orange', 'orange', 'orange'],
+        top: ['white', 'white', 'white', 'white'],
+        bottom: ['yellow', 'yellow', 'yellow', 'yellow']
+    }
+}
+
+function greenRed() {
+    return {
+        front: ['green', 'green', 'green', 'green'],
+        back: ['blue', 'blue', 'blue', 'blue'],
+        right: ['yellow', 'yellow', 'yellow', 'yellow'],
+        left: ['white', 'white', 'white', 'white'],
+        top: ['red', 'red', 'red', 'red'],
+        bottom: ['orange', 'orange', 'orange', 'orange']
+    }
+}
+
+function greenOrange() {
+    return {
+        front: ['green', 'green', 'green', 'green'],
+        back: ['blue', 'blue', 'blue', 'blue'],
+        right: ['white', 'white', 'white', 'white'],
+        left: ['yellow', 'yellow', 'yellow', 'yellow'],
+        top: ['orange', 'orange', 'orange', 'orange'],
+        bottom: ['red', 'red', 'red', 'red']
+    }
+}
+
+function whiteRed() {
+    return {
+        front: ['white', 'white', 'white', 'white'],
+        back: ['yellow', 'yellow', 'yellow', 'yellow'],
+        right: ['green', 'green', 'green', 'green'],
+        left: ['blue', 'blue', 'blue', 'blue'],
+        top: ['red', 'red', 'red', 'red'],
+        bottom: ['orange', 'orange', 'orange', 'orange']
+    }
+}
+
+function whiteOrange() {
+    return {
+        front: ['white', 'white', 'white', 'white'],
+        back: ['yellow', 'yellow', 'yellow', 'yellow'],
+        right: ['blue', 'blue', 'blue', 'blue'],
+        left: ['green', 'green', 'green', 'green'],
+        top: ['orange', 'orange', 'orange', 'orange'],
+        bottom: ['red', 'red', 'red', 'red']
+    }
+}
+
+function whiteGreen() {
+    return {
+        front: ['white', 'white', 'white', 'white'],
+        back: ['yellow', 'yellow', 'yellow', 'yellow'],
+        right: ['orange', 'orange', 'orange', 'orange'],
+        left: ['red', 'red', 'red', 'red'],
+        top: ['green', 'green', 'green', 'green'],
+        bottom: ['blue', 'blue', 'blue', 'blue']
+    }
+}
+
+
+function whiteBlue() {
+    return {
+        front: ['white', 'white', 'white', 'white'],
+        back: ['yellow', 'yellow', 'yellow', 'yellow'],
+        right: ['red', 'red', 'red', 'red'],
+        left: ['orange', 'orange', 'orange', 'orange'],
+        top: ['blue', 'blue', 'blue', 'blue'],
+        bottom: ['green', 'green', 'green', 'green']
+    }
+}
+
+function blueYellow() {
+    return {
+        front: ['blue', 'blue', 'blue', 'blue'],
+        back: ['green', 'green', 'green', 'green'],
+        right: ['red', 'red', 'red', 'red'],
+        left: ['orange', 'orange', 'orange', 'orange'],
+        top: ['yellow', 'yellow', 'yellow', 'yellow'],
+        bottom: ['white', 'white', 'white', 'white']
+    }
+}
+
+function blueWhite() {
+    return {
+        front: ['blue', 'blue', 'blue', 'blue'],
+        back: ['green', 'green', 'green', 'green'],
+        right: ['orange', 'orange', 'orange', 'orange'],
+        left: ['red', 'red', 'red', 'red'],
+        top: ['white', 'white', 'white', 'white'],
+        bottom: ['yellow', 'yellow', 'yellow', 'yellow']
+    }
+}
+
+function blueRed() {
+    return {
+        front: ['blue', 'blue', 'blue', 'blue'],
+        back: ['green', 'green', 'green', 'green'],
+        right: ['white', 'white', 'white', 'white'],
+        left: ['yellow', 'yellow', 'yellow', 'yellow'],
+        top: ['red', 'red', 'red', 'red'],
+        bottom: ['orange', 'orange', 'orange', 'orange']
+    }
+}
+
+function blueOrange() {
+    return {
+        front: ['blue', 'blue', 'blue', 'blue'],
+        back: ['green', 'green', 'green', 'green'],
+        right: ['yellow', 'yellow', 'yellow', 'yellow'],
+        left: ['white', 'white', 'white', 'white'],
+        top: ['orange', 'orange', 'orange', 'orange'],
+        bottom: ['red', 'red', 'red', 'red']
+    }
+}
+
+function yellowBlue() {
+    return {
+        front: ['yellow', 'yellow', 'yellow', 'yellow'],
+        back: ['white', 'white', 'white', 'white'],
+        right: ['orange', 'orange', 'orange', 'orange'],
+        left: ['red', 'red', 'red', 'red'],
+        top: ['blue', 'blue', 'blue', 'blue'],
+        bottom: ['green', 'green', 'green', 'green']
+    }
+}
+
+function yellowGreen() {
+    return {
+        front: ['yellow', 'yellow', 'yellow', 'yellow'],
+        back: ['white', 'white', 'white', 'white'],
+        right: ['red', 'red', 'red', 'red'],
+        left: ['orange', 'orange', 'orange', 'orange'],
+        top: ['green', 'green', 'green', 'green'],
+        bottom: ['blue', 'blue', 'blue', 'blue']
+    }
+}
+
+function yellowOrange() {
+    return {
+        front: ['yellow', 'yellow', 'yellow', 'yellow'],
+        back: ['white', 'white', 'white', 'white'],
+        right: ['green', 'green', 'green', 'green'],
+        left: ['blue', 'blue', 'blue', 'blue'],
+        top: ['orange', 'orange', 'orange', 'orange'],
+        bottom: ['red', 'red', 'red', 'red']
+    }
+}
+
+function yellowRed() {
+    return {
+        front: ['yellow', 'yellow', 'yellow', 'yellow'],
+        back: ['white', 'white', 'white', 'white'],
+        right: ['blue', 'blue', 'blue', 'blue'],
+        left: ['green', 'green', 'green', 'green'],
+        top: ['red', 'red', 'red', 'red'],
+        bottom: ['orange', 'orange', 'orange', 'orange']
+    }
+}
+
 
   function makeMove(cube, move) {
     // 'b','B'

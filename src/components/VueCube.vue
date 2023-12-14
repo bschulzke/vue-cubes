@@ -581,7 +581,7 @@ methods: {
   scramble() {
     let symbols = ['u','U','d','D','l','L','r','R','f','F','b','B'];
     let previousMove = ""
-    let max = Math.floor(Math.random() * 2) + 2
+    let max = 5
     for (let i = 0; i < max; i++) {
       let currentMove = symbols[Math.floor(Math.random() * symbols.length)]
       if (currentMove !== this.oppositeMove(previousMove)) {
