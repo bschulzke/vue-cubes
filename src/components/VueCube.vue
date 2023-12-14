@@ -292,10 +292,11 @@ methods: {
       this.loading = true;
       worker.onmessage = (e) => {
         console.log("Response from solver worker: " + e.data);
-        this.doMoves(e.data);
         this.loading = false;
-        if (e.data.length === 0) {
-          alert("Already solved!")
+        if (e.data !== null) {
+          this.doMoves(e.data);
+        } else {
+          alert("No solution found!")
         }
         worker.terminate();
       }
@@ -303,35 +304,7 @@ methods: {
     async doMoves(moveString) {
       for (let i = 0; i < moveString.length; i++) {
         await new Promise(r => setTimeout(r, 500));
-        this.doMove(moveString.charAt(i));
-      }
-    },
-    doMove(move) {
-      switch (move) {
-        case 'u':
-            return this.u()
-        case 'U':
-            return this.uPrime()
-        case 'd':
-            return this.d()
-        case 'D':
-            return this.dPrime()
-        case 'l':
-            return this.l()
-        case 'L':
-            return this.lPrime()
-        case 'r':
-            return this.r()
-        case 'R':
-            return this.rPrime()
-        case 'f':
-            return this.f();
-        case 'F':
-            return this.fPrime()
-        case 'b':
-            return this.b()
-        case 'B':
-            return this.bPrime()
+        this.makeMove(moveString.charAt(i));
       }
     },
     getCubeCopy() {
@@ -580,35 +553,69 @@ methods: {
   makeMove(symbol) {
     switch (symbol) {
       case 'u':
-        this.u();
+        return this.u();
       case 'U':
-        this.uPrime();
+       return this.uPrime();
       case 'd':
-        this.d();
+        return this.d();
       case 'D':
-        this.dPrime();
+        return this.dPrime();
       case 'l':
-        this.l();
+        return this.l();
       case 'L':
-        this.lPrime();
+        return this.lPrime();
       case 'r':
-        this.r();
+        return this.r();
       case 'R':
-        this.rPrime();
+        return this.rPrime();
       case 'f':
-        this.f();
+       return this.f();
       case 'F':
-        this.fPrime();
+       return this.fPrime();
       case 'b':
-        this.b();
+       return this.b();
       case 'B':
-        this.bPrime();
+      return this.bPrime();
     }
   },
   scramble() {
     let symbols = ['u','U','d','D','l','L','r','R','f','F','b','B'];
-    for (let i = 0; i < 100; i++) {
-      this.makeMove(symbols[Math.floor(Math.random() * symbols.length)])
+    let previousMove = ""
+    let max = Math.floor(Math.random() * 2) + 2
+    for (let i = 0; i < max; i++) {
+      let currentMove = symbols[Math.floor(Math.random() * symbols.length)]
+      if (currentMove !== this.oppositeMove(previousMove)) {
+        this.makeMove(currentMove);
+      }
+      previousMove = currentMove;
+    }
+  },
+  oppositeMove(move) {
+    switch (move) {
+        case 'u':
+            return 'U'
+        case 'U':
+            return 'u'
+        case 'd':
+            return 'D'
+        case 'D':
+            return 'd'
+        case 'l':
+            return 'L'
+        case 'L':
+            return 'l'
+        case 'r':
+            return 'R'
+        case 'R':
+            return 'r'
+        case 'f':
+            return 'F'
+        case 'F':
+            return 'f'
+        case 'b':
+            return 'B'
+        case 'B':
+            return 'b'
     }
   }
 }

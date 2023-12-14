@@ -66,7 +66,7 @@ async function startWorker(e) {
     const backwardPathMap = [];
 
     console.log("Beginning bidirectional search...")
-    let max_iterations = 10000
+    let max_iterations = 250
     let currentBackward = null;
     while (queueForward.length > 0 && queueBackward.length > 0 && max_iterations > 0) {
 
