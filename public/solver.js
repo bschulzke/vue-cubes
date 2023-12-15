@@ -55,19 +55,6 @@ async function startWorker(e) {
     }
 
     const shiftBest = (queue) => {
-        // let bestNode = queue.at(queue.length - 1)
-        // let bestValue = evaluate(bestNode.cube)
-        // let index = queue.length - 1
-        // for (let i = 0; i < queue.length; i++) {
-        //     let currVal = evaluate(queue.at(i).cube)
-        //     if (currVal > bestValue) {
-        //         bestNode = queue.at(i)
-        //         bestValue = evaluate(bestNode.cube)
-        //         index = i
-        //     }
-        // }
-        // queue.splice(index, 1)
-        // return bestNode
         return queue.shift()
     }
     

@@ -138,7 +138,7 @@ async function startWorker(e) {
   
   }
 
-  const getMoves = () => { return ['u','U','d','D','l','L','r','R','f','F','b','B']; }
+  const getMoves = () => { return ['u','r','l']; }
 
   // Helper function to generate neighbors for forward BFS
 function generateNeighbors(node) {

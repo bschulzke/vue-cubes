@@ -286,14 +286,18 @@ methods: {
       this.undoHistory = []
     },
     async solve() {
-      let worker = new Worker("solver.js");
-      console.log("Starting up the worker...")
+      let worker = new Worker("bfs.js");
+      console.log("Starting up the worker...");
       worker.postMessage(this.getCubeCopy());
       this.loading = true;
       worker.onmessage = (e) => {
-        console.log("Response from solver worker: " + e.data);
+        // console.log("Response from solver worker: " + e.data);
         this.loading = false;
-        if (e.data !== null) {
+        console.log(e)
+        if (e.data === "") {
+          alert("Already solved!")
+        }
+        else if (e.data) {
           this.doMoves(e.data);
         } else {
           alert("No solution found!")
