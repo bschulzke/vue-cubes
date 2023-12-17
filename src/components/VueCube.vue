@@ -47,6 +47,7 @@
 </div>
 <div class="loader-wrapper">
   <div v-if="loading" class="throbber-loader"></div>
+  <div>{{ solution }}</div>
 </div>
 <div class="slider-wrapper">
   <label>x:</label><input class="slider" v-model="x" type="range" min="-360" max="360">   
@@ -110,7 +111,8 @@ data() {
         loading: false,
         x: 0,
         y: 0,
-        z: 0
+        z: 0,
+        solution: null
     }
 },
 watch: {
@@ -147,6 +149,7 @@ methods: {
     this.start.corner = corner;
   },
   endSwipe(face, corner) {
+    this.solution = null
     console.log("ending: " + corner);
     this.end.face = face;
     this.end.corner = corner;
@@ -284,6 +287,7 @@ methods: {
         };
       this.history = []
       this.undoHistory = []
+      this.solution = null
     },
     async solve() {
       let worker = new Worker("bfs.js");
@@ -306,9 +310,18 @@ methods: {
       }
     },
     async doMoves(moveString) {
+      this.solution = ""
       for (let i = 0; i < moveString.length; i++) {
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 800));
+        this.solution += this.getChar(moveString.charAt(i)) + " ";
         this.makeMove(moveString.charAt(i));
+      }
+    },
+    getChar(symbol) {
+      if (symbol === symbol.toUpperCase()) {
+        return symbol + "'"
+      } else {
+        return symbol.toUpperCase()
       }
     },
     getCubeCopy() {
@@ -583,9 +596,10 @@ methods: {
     }
   },
   scramble() {
+    this.solution = null;
     let symbols = ['u','U','d','D','l','L','r','R','f','F','b','B'];
     let previousMove = ""
-    let max = 5
+    let max = 7
     for (let i = 0; i < max; i++) {
       let currentMove = symbols[Math.floor(Math.random() * symbols.length)]
       if (currentMove !== this.oppositeMove(previousMove)) {
