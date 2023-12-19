@@ -1,6 +1,6 @@
 # vue-cubes
 
-BFS 2x2 solver algorithm credit to MackHartley - https://github.com/MackHartley/2x2RubixSolver/blob/main/src/solver.kt
+BFS 2x2 solver based on algorithm by MackHartley - https://github.com/MackHartley/2x2RubixSolver/blob/main/src/solver.kt
 
 ## Project setup
 ```
