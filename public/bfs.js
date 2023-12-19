@@ -33,15 +33,6 @@ function bidirectionalBfsSolver(cube) {
 
     const startCube = new Cube(cube);
 
-    const targetCube = new Cube({
-        front: ['red', 'red', 'red', 'red'],
-        back: ['orange', 'orange', 'orange', 'orange'],
-        right: ['green', 'green', 'green', 'green'],
-        left: ['blue', 'blue', 'blue', 'blue'],
-        top: ['yellow', 'yellow', 'yellow', 'yellow'],
-        bottom: ['white', 'white', 'white', 'white']
-    });
-
     const targetCubes = getTargetCubes()
 
     while (curItr++ < maxItr) {
@@ -49,6 +40,9 @@ function bidirectionalBfsSolver(cube) {
 
         // Search node
         const currentSearchSteps = searchQueue.shift();
+        if (currentSearchSteps.length > 14) {
+            continue;
+        }
         const currentSearchCubeState = startCube.calculateCubeState(currentSearchSteps);
         
         for (let i = 0; i < solutionVisited.length; i++) {
@@ -76,6 +70,9 @@ function bidirectionalBfsSolver(cube) {
         for (let i = 0; i < targetCubes.length; i++) {
             const currSolutionQueue = solutionQueue[i]
             const curTargetSteps = currSolutionQueue.shift();
+            if (curTargetSteps.length > 14) {
+                continue;
+            }
             const currentTargetCubeState = targetCubes[i].calculateCubeState(curTargetSteps);
 
             if (!solutionVisited[i].has(JSON.stringify(currentTargetCubeState))) {

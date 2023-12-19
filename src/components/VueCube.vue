@@ -599,7 +599,7 @@ methods: {
     this.solution = null;
     let symbols = ['u','U','d','D','l','L','r','R','f','F','b','B'];
     let previousMove = ""
-    let max = 7
+    let max = 10
     for (let i = 0; i < max; i++) {
       let currentMove = symbols[Math.floor(Math.random() * symbols.length)]
       if (currentMove !== this.oppositeMove(previousMove)) {
@@ -641,6 +641,10 @@ methods: {
 </script>
 
 <style scoped>
+
+button {
+  height: 2rem;
+}
 
 .cube-simulator {
   width: 100vw;
